@@ -5,7 +5,7 @@
       <image class="profile-avatar" src="/resources/default-avatar.png"></image>
       <text class="profile-name">设置昵称</text>
     </view>
-  
+    <navigator target="miniProgram" open-type="navigate" app-id="wx8abaf00ee8c3202e" extra-data="{{ extraData }}" version="release">#意见反馈</navigator>
     <!-- 数据统计 -->
     <view class="statistics">
       <view class="stat-item">

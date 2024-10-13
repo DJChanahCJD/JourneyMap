@@ -1,11 +1,18 @@
 Page({
     data: {
-      useMockData: true, // 是否使用模拟数据，便于切换到真实API
-      cityCount: 0, // 用户所探索的城市数量
-      spotCount: 0, // 用户收藏的景点数量
-      wishlist: [], // 用户的心愿单（收藏的景点）
-      avatarUrl: '/resources/default-avatar.png', // 默认头像
-      nickName: '未设置昵称' // 用户昵称
+        extraData :{
+            // 把1368数字换成你的产品ID，否则会跳到别的产品
+            id : "672493",
+            // 自定义参数，具体参考文档
+            customData : {
+            }
+          },
+        useMockData: true, // 是否使用模拟数据，便于切换到真实API
+        cityCount: 0, // 用户所探索的城市数量
+        spotCount: 0, // 用户收藏的景点数量
+        wishlist: [], // 用户的心愿单（收藏的景点）
+        avatarUrl: '/resources/default-avatar.png', // 默认头像
+        nickName: '未设置昵称' // 用户昵称
     },
   
     onLoad() {
