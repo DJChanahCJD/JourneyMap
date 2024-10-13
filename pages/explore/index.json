@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "top-bar": "/components/top-bar/top-bar",
+    "nav-bar": "/components/nav-bar/nav-bar"
+  }
 }

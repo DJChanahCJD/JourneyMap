@@ -1,0 +1,16 @@
+<!--components/nav-bar/nav-bar.wxml-->
+<view class="nav-bar">
+    <navigator url="/pages/explore/index" open-type="switchTab" class="nav-item {{activePage === 'explore' ? 'active' : ''}}">
+      <image src="/resources/explore-icon.png" class="nav-icon"></image>
+      <text class="nav-label">探索</text>
+    </navigator>
+    <navigator url="/pages/map/index" open-type="switchTab" class="nav-item {{activePage === 'map' ? 'active' : ''}}">
+      <image src="/resources/map-icon.png" class="nav-icon"></image>
+      <text class="nav-label">地图</text>
+    </navigator>
+    <navigator url="/pages/my/index" open-type="switchTab" class="nav-item {{activePage === 'my' ? 'active' : ''}}">
+      <image src="/resources/user-icon.png" class="nav-icon"></image>
+      <text class="nav-label">我的</text>
+    </navigator>
+  </view>
+

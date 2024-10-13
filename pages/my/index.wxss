@@ -1,1 +1,76 @@
 /* pages/my/index.wxss */
+.my-container {
+    padding: 20rpx;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30rpx;
+  }
+  
+  .profile-avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+  }
+  
+  .profile-name {
+    margin-left: 20rpx;
+    font-size: 28rpx;
+  }
+  
+  .statistics {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-number {
+    font-size: 40rpx;
+    font-weight: bold;
+  }
+  
+  .stat-label {
+    font-size: 24rpx;
+    color: #8e8e93;
+  }
+  
+  .wishlist {
+    margin-top: 20rpx;
+  }
+  
+  .wishlist-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    margin-bottom: 20rpx;
+  }
+  
+  .wishlist-item {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 10rpx;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20rpx;
+  }
+  
+  .wishlist-image {
+    width: 150rpx;
+    height: 150rpx;
+  }
+  
+  .wishlist-info {
+    flex: 1;
+    padding: 20rpx;
+  }
+  
+  .wishlist-name {
+    font-size: 30rpx;
+    font-weight: bold;
+  }
+  

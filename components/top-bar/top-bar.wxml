@@ -1,0 +1,6 @@
+<view class="top-bar">
+    <view class="logo-container">
+      <image src="../../resources/marker.png" class="logo"></image>
+      <text class="app-name">JourneyMap</text>
+    </view>
+</view>

@@ -1,2 +1,41 @@
-<!--pages/my/index.wxml-->
-<text>pages/my/index.wxml</text>
+<view class="my-container">
+    <top-bar></top-bar>
+    <!-- 顶部个人信息 -->
+    <view class="profile-header">
+      <image class="profile-avatar" src="/resources/default-avatar.png"></image>
+      <text class="profile-name">设置昵称</text>
+    </view>
+  
+    <!-- 数据统计 -->
+    <view class="statistics">
+      <view class="stat-item">
+        <text class="stat-number">{{cityCount}}</text>
+        <text class="stat-label">个城市</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{spotCount}}</text>
+        <text class="stat-label">个景点</text>
+      </view>
+    </view>
+  
+    <!-- 心愿单 -->
+    <view class="wishlist">
+      <text class="wishlist-title">心愿单</text>
+      <block wx:for="{{wishlist}}" wx:key="id">
+        <view class="wishlist-item">
+          <image class="wishlist-image" src="{{item.image}}"></image>
+          <view class="wishlist-info">
+            <text class="wishlist-name">{{item.name}}</text>
+            <text class="wishlist-hours">
+                开放时间：{{item.hours}}</text>
+            <text class="wishlist-address">
+                地址：{{item.address}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+  
+  <!-- 底部导航栏 -->
+  <nav-bar></nav-bar>
+  
