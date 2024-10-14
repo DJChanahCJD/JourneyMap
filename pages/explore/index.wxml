@@ -1,37 +1,43 @@
 <view class="explore-container">
-    <top-bar></top-bar>
-    <!-- 顶部选择框 -->
-    <view class="explore-header">
-      <picker mode="selector" range="{{cityList}}" bindchange="onCityChange">
-        <view class="picker">城市：{{selectedCity}}</view>
-      </picker>
-      <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
-        <view class="picker">类型：{{selectedType}}</view>
-      </picker>
-    </view>
-  
-    <!-- 景点列表 -->
-    <view class="spot-list">
-      <block wx:for="{{spots}}" wx:key="id">
-        <view class="spot-item">
-          <image class="spot-image" src="{{item.image}}"></image>
-          <view class="spot-info">
-            <text class="spot-name">{{item.name}}</text>
-            <text class="spot-tags">
-                {{item.tags}}</text>
-            <text class="spot-hours">
-                开放时间：{{item.hours}}</text>
-            <text class="spot-address">
-                地址：{{item.address}}</text>
-          </view>
-          <button class="collect-button" bindtap="toggleCollect" data-id="{{item.id}}">
-            <text>{{item.isCollected ? '已收藏' : '收藏'}}</text>
-          </button>
+  <top-bar></top-bar>
+
+  <!-- 顶部选择框 -->
+  <view class="explore-header">
+    <!-- 省份和城市选择器 -->
+    <picker mode="region" bindchange="onRegionChange" custom-item="全部省份" level="city">
+      <view class="picker">
+        {{selectedProvince}} | {{selectedCity}}
+      </view>
+    </picker>
+
+    <!-- 类型选择器 -->
+    <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
+      <view class="picker">类型：{{selectedType}}</view>
+    </picker>
+  </view>
+
+  <!-- 景点列表 -->
+  <view class="spot-list">
+    <block wx:for="{{spots}}" wx:key="id">
+      <view class="spot-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+        <image class="spot-image" src="{{item.image}}"></image>
+        <view class="spot-info">
+          <text class="spot-name">{{item.name}}</text>
+          <text class="spot-tags">{{item.type}}</text>
+          <text class="spot-hours">开放时间：{{item.hours}}</text>
+          <text class="spot-address">地址：{{item.address}}</text>
         </view>
-      </block>
+        <button class="collect-button" bindtap="toggleCollect" data-id="{{item.id}}">
+          <text>{{item.isCollected ? '已收藏' : '收藏'}}</text>
+        </button>
+      </view>
+    </block>
+    <!-- 无数据提示 -->
+    <view wx:if="{{spots.length === 0}}" class="no-data">
+      <text>暂无景点数据</text>
     </view>
   </view>
-  
+
   <!-- 底部导航栏 -->
   <nav-bar></nav-bar>
-  
+</view>

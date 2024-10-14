@@ -1,11 +1,11 @@
 <view class="my-container">
-    <top-bar></top-bar>
+  <top-bar></top-bar>
     <!-- 顶部个人信息 -->
-    <view class="profile-header">
-      <image class="profile-avatar" src="/resources/default-avatar.png"></image>
-      <text class="profile-name">设置昵称</text>
-    </view>
-    <navigator target="miniProgram" open-type="navigate" app-id="wx8abaf00ee8c3202e" extra-data="{{ extraData }}" version="release">#意见反馈</navigator>
+  <view class="profile-header">
+    <image class="profile-avatar" src="/resources/default-avatar.png"></image>
+    <text class="profile-name">设置昵称</text>
+  </view>
+    <!--  -->
     <!-- 数据统计 -->
     <view class="statistics">
       <view class="stat-item">
@@ -17,7 +17,7 @@
         <text class="stat-label">个景点</text>
       </view>
     </view>
-  
+
     <!-- 心愿单 -->
     <view class="wishlist">
       <text class="wishlist-title">心愿单</text>
@@ -35,7 +35,6 @@
       </block>
     </view>
   </view>
-  
+
   <!-- 底部导航栏 -->
   <nav-bar></nav-bar>
-  

@@ -1,61 +1,73 @@
 /* pages/explore/index.wxss */
-.explore-container {
-    padding: 20rpx;
-  }
-  
-  .explore-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20rpx;
-  }
-  
+/* .explore-container {
+
+} */
+
+.explore-header {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20rpx;
+}
+
   .picker {
     font-size: 28rpx;
     padding: 10rpx;
     background-color: #f0f0f0;
     border-radius: 10rpx;
   }
-  
+
   .spot-list {
     display: flex;
     flex-direction: column;
     gap: 20rpx;
   }
-  
+
   .spot-item {
-    display: flex;
-    background-color: #ffffff;
-    border-radius: 10rpx;
-    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  margin: 20rpx 10rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 20rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   }
-  
+
   .spot-image {
-    width: 150rpx;
-    height: 150rpx;
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 8rpx;
+    margin-right: 20rpx;
+    object-fit: cover;
   }
-  
+
   .spot-info {
     flex: 1;
-    padding: 20rpx;
   }
-  
+
   .spot-name {
-    font-size: 30rpx;
+    font-size: 32rpx;
+    color: #333333;
     font-weight: bold;
   }
-  
+
   .spot-tags {
     color: #FFD700;
     margin-top: 10rpx;
   }
-  
-  .collect-button {
-    align-self: center;
-    background-color: #FFD700;
-    border: none;
-    padding: 10rpx;
-    border-radius: 10rpx;
-    margin-left: 20rpx;
+
+  .spot-address {
+    font-size: 26rpx;
+    color: #888888;
+    margin-top: 10rpx;
   }
-  
+
+  .collect-button {
+    background-color: #ffc107; /* 黄色 */
+    color: #ffffff;
+    border-radius: 10rpx;
+    padding: 10rpx 20rpx;
+    text-align: center;
+    margin-top: 20rpx;
+    align-self: center;
+  }

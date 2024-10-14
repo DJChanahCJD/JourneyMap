@@ -4,9 +4,11 @@
     "pages/explore/index",
     "pages/my/index",
     "pages/logs/logs",
-    "components/top-bar/top-bar"
+    "components/top-bar/top-bar",
+    "pages/detail/index"
   ],
   "window": {
+    "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
@@ -33,8 +35,5 @@
         "pagePath": "pages/my/index"
       }
     ]
-  },
-  "navigateToMiniProgramAppIdList": [
-    "wx39efc4783f761db1"
-  ]
+  }
 }

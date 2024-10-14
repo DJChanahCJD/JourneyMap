@@ -1,7 +1,6 @@
 /* pages/my/index.wxss */
 .my-container {
-    padding: 20rpx;
-  }
+}
   
   .profile-header {
     display: flex;

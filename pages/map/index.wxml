@@ -1,14 +1,18 @@
 <view class="container">
     <top-bar></top-bar>
     <map
+        id="map"
+        class="map"
+        show-location
         subkey="{{subkey}}"
         longitude="{{longitude}}"
         latitude="{{latitude}}"
-        scale="14"
+        scale="13"
         markers="{{markers}}"
         bindmarkertap="onMarkerTap"
         enable-3D="false"
-        show-compass="false"
+        show-compass="true"
+        enable-poi="true"
         show-scale="true"
         enable-zoom="true"
         enable-scroll="true"
@@ -17,6 +21,28 @@
         style="width: 100%; height: 100vh; display: block;"
     ></map>
 
+      <!-- 新增的右侧按钮组 -->
+  <view class="right-button-group">
+    <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
+        <view class="button-item">
+          <image src="/resources/layer-icon.png" class="button-icon"/>
+          <text class="button-text">{{selectedType == "全部" ? "分类" : selectedType}}</text>
+        </view>
+    </picker>
+    <navigator class="button-item" target="miniProgram" open-type="navigate" app-id="{{appId}}" extra-data="{{ extraData }}" version="release">
+      <image src="/resources/feedback-icon.png" class="button-icon"/>
+      <text class="button-text">反馈</text>
+    </navigator>
+  </view>
+
+  <!-- 详情卡片-->
+   <view wx:if="{{selectedSpot}}" class="detail-card" bindtap="navigateToDetail">
+    <view class="detail-content">
+        <text class="detail-title">{{selectedSpot.name}}</text>
+        <text class="detail-description">点击查看详情</text>
+    </view>
+
+   </view>
     <!-- Improved Bottom Navigation Bar -->
     <nav-bar></nav-bar>
 </view>

@@ -1,7 +1,69 @@
-/* Overall Container */ 
-.container { 
-    display: flex; 
-    flex-direction: column; 
+/* Overall Container */
+.container {
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
     height: 100vh;
-} 
+}
+
+.right-button-group {
+    position: absolute;
+    top: 30%;
+    right: 10px;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    padding: 5px 5px;
+    z-index: 1000; /* 确保按钮组位于地图上层 */
+}
+
+.button-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 2px;
+    border-radius: 5px;
+}
+
+.button-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+}
+
+.button-text {
+    font-size: 10px;
+    color: #333;
+}
+
+/* detail card */
+.detail-card {
+    position: absolute;
+    bottom: 14%;
+    left: 10%;
+    right: 10%;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.detail-description {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}

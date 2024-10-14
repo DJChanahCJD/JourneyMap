@@ -9,11 +9,17 @@
   padding-left: 20rpx;
 }
 
-.logo-container { 
-    display: flex; 
+.separator {
+  height: 1rpx;
+  width: 1024rpx;
+  margin-left: -500rpx;
+  background-color: #d9d9d9;
+}
+.logo-container {
+    display: flex;
     align-items: center;
     margin-bottom: 18px;
-} 
+}
 
 .logo {
   width: 64rpx;
