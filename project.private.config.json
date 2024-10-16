@@ -3,7 +3,8 @@
   "projectname": "JourneyMap",
   "setting": {
     "compileHotReLoad": true,
-    "skylineRenderEnable": false
+    "skylineRenderEnable": false,
+    "urlCheck": false
   },
-  "libVersion": "3.6.1"
+  "libVersion": "3.6.0"
 }

@@ -31,7 +31,7 @@
     </view>
 
     <!-- 其他操作 -->
-    <button class="collect-button" bindtap="onCollectToggle">
-      {{collected ? '取消收藏' : '收藏'}}
-    </button>
+    <t-button theme="primary" class="collect-button" bindtap="onCollectToggle">
+      {{collected ? '已收藏' : '收藏'}}
+    </t-button>
   </view>

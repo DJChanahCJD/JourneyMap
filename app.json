@@ -12,7 +12,12 @@
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
-  "style": "v2",
+  "useExtendedLib": { "weui": true },
+  "usingComponents": {
+    "t-button": "/miniprogram_npm/tdesign-miniprogram/button/button",
+    "top-bar": "/components/top-bar/top-bar",
+    "nav-bar": "/components/nav-bar/nav-bar"
+  },
   "renderer": "webview",
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
@@ -22,6 +27,7 @@
       "desc": "你的位置信息将用于小程序位置接口的效果展示"
     }
   },
+  "embeddedAppIdList": ["wx8abaf00ee8c3202e"],
   "tabBar": {
     "custom": true,
     "list": [

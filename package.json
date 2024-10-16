@@ -1,0 +1,16 @@
+{
+  "name": "miniapp-1",
+  "version": "1.0.0",
+  "main": ".eslintrc.js",
+  "dependencies": {
+    "@cloudbase/js-sdk": "^2.8.3-beta.0",
+    "miniapp-1": "file:",
+    "tdesign-miniprogram": "^1.6.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

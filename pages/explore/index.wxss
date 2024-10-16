@@ -1,20 +1,6 @@
 /* pages/explore/index.wxss */
 /* .explore-container {
-
 } */
-
-.explore-header {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20rpx;
-}
-
-  .picker {
-    font-size: 28rpx;
-    padding: 10rpx;
-    background-color: #f0f0f0;
-    border-radius: 10rpx;
-  }
 
   .spot-list {
     display: flex;
@@ -43,6 +29,7 @@
 
   .spot-info {
     flex: 1;
+    padding: 4px;
   }
 
   .spot-name {
@@ -63,7 +50,9 @@
   }
 
   .collect-button {
-    background-color: #ffc107; /* 黄色 */
+    --td-button-primary-bg-color: #ffd700;
+    --td-button-primary-border-color: #ffd700;
+    --td-button-primary-active-bg-color: #e8c800;
     color: #ffffff;
     border-radius: 10rpx;
     padding: 10rpx 20rpx;
@@ -71,3 +60,11 @@
     margin-top: 20rpx;
     align-self: center;
   }
+
+  .no-data {
+    text-align: center;
+    margin-top: 200rpx;
+    font-size: 32rpx;
+    color: #888888;
+  }
+  

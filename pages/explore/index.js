@@ -2,53 +2,182 @@ const mockData = require('../../data/mockData.js');
 
 Page({
     data: {
-        useMockData: true, // 是否使用模拟数据，便于切换到真实API
-        typeList: ['全部类型', '文化', '自然', '历史', '艺术', '娱乐', '科技'],
-        selectedProvince: '全部省份',
-        selectedCity: '全部城市',
-        selectedType: '全部类型',
+        province: {
+            value: 0, // 当前选中的省份索引，默认选中第一个，即 "全部省份"
+            options: [
+                { value: 0, label: '全部省份' } // 初始化时包含 "全部省份" 选项
+            ]
+        },
+        city: {
+            value: 0, // 当前选中的城市索引
+            options: [
+                { value: 0, label: '全部城市' } // 初始化时包含 "全部城市" 选项
+            ]
+        },
+        type: {
+            value: 0, // 当前选中的类型索引
+            options: [
+                { value: 0, label: '全部类型' } // 初始化时包含 "全部类型" 选项
+            ]
+        },
         spots: [], // 景点数据列表
-        regionValue: [] // 省份和城市选择器的初始值
+        favoriteSpotIds: [], // 用户收藏的景点ID列表
+        isPickerDisabled: false, // 是否禁用下拉选择栏
+        enableRefresh: false, // 控制下拉刷新的状态
+        scrollTop: 0 // 滚动位置
     },
 
     onLoad() {
-        // 获取本地存储的收藏状态
-        const storedSpots = wx.getStorageSync('scenicSpots');
-        if (storedSpots && storedSpots.length > 0) {
-            this.setData({ spots: storedSpots });
-        } else {
-            this.fetchSpotData(); // 加载景点数据
-        }
+        const favoriteSpotIds = wx.getStorageSync('favoriteSpotIds') || [];
+        console.log("explore: ", wx.getStorageSync('favoriteSpotIds'));
+        this.setData({ favoriteSpotIds });
+        // 生成初始的筛选项
+        this.generateFilterOptions();
+        this.fetchSpotData(); // 初始加载景点数据
     },
 
     /**
-     * 处理区域选择变化
+     * 下拉刷新事件处理
+     */
+    onRefresh() {
+        // 设置刷新中状态为true
+        this.setData({ enableRefresh: true });
+
+        // 模拟数据加载，延迟刷新完成
+        setTimeout(() => {
+            // 重新加载筛选项和景点数据
+            this.generateFilterOptions();
+            this.fetchSpotData();
+            // 刷新完成后设置状态为false
+            this.setData({ enableRefresh: false });
+        }, 1500);
+    },
+
+    /**
+     * 页面滚动事件处理
      * @param {Object} e - 事件对象
      */
-    onRegionChange(e) {
-        const { value, code, postcode } = e.detail;
+    onScroll(e) {
+        const { scrollTop } = e.detail;
+        this.setData({ scrollTop });
+    },
 
-        // 检查是否选择了自定义的“全部省份”
-        if (value[0] === '全部省份') {
-            this.setData({
-                selectedProvince: '全部省份',
-                selectedCity: '全部城市',
-                regionValue: value
-            }, () => {
-                this.fetchSpotData(); // 更新区域后重新加载景点数据
-            });
-        } else {
-            // 获取实际选择的省份和城市
-            let selectedProvince = value[0];
-            let selectedCity = value[1] || '全部城市';
-            this.setData({
-                selectedProvince: selectedProvince,
-                selectedCity: selectedCity,
-                regionValue: value
-            }, () => {
-                this.fetchSpotData(); // 更新区域后重新加载景点数据
-            });
+    /**
+     * 生成筛选项（省、市、类型）
+     */
+    generateFilterOptions() {
+        const provinces = new Set();
+        const types = new Set();
+
+        // 遍历数据生成唯一的省份和类型
+        mockData.scenicSpots.forEach(spot => {
+            provinces.add(spot.province);
+            types.add(spot.type);
+        });
+
+        // 将所有省份选项追加到 options 中
+        const provinceOptions = Array.from(provinces).map((province, index) => ({
+            value: index + 1, // 从 1 开始，因为 0 是 "全部省份"
+            label: province
+        }));
+
+        // 将所有类型选项追加到 options 中
+        const typeOptions = Array.from(types).map((type, index) => ({
+            value: index + 1, // 从 1 开始，因为 0 是 "全部类型"
+            label: type
+        }));
+
+        // 设置初始数据，默认选中第一个
+        this.setData({
+            'province.options': [...this.data.province.options, ...provinceOptions],
+            'type.options': [...this.data.type.options, ...typeOptions]
+        }, () => {
+            // 生成初始的城市选项
+            this.updateCityOptions();
+        });
+    },
+
+    /**
+     * 处理省份选择变化
+     * @param {Object} e - 事件对象
+     */
+    onProvinceChange(e) {
+        if (this.data.isPickerDisabled) {
+            return; // 如果 picker 被禁用，直接返回
         }
+
+        // 获取选择的索引
+        const selectedIndex = parseInt(e.detail.value, 10);
+
+        // 禁用选择，防止用户多次点击
+        this.setData({ isPickerDisabled: true });
+
+        // 更新省份的索引并重置城市
+        this.setData({
+            'province.value': selectedIndex,
+            'city.value': 0 // 重置城市选项为 "全部城市"
+        }, () => {
+            this.updateCityOptions(); // 根据选择的省份动态更新城市列表
+            this.fetchSpotData(); // 重新加载景点数据
+
+            // 在 500ms 后重新启用选择
+            setTimeout(() => {
+                this.setData({ isPickerDisabled: false });
+            }, 500);
+        });
+    },
+    /**
+     * 动态生成城市选项
+     */
+    updateCityOptions() {
+        const selectedProvince = this.data.province.options[this.data.province.value].label;
+        const cities = new Set();
+
+        // 根据所选省份生成城市选项
+        mockData.scenicSpots.forEach(spot => {
+            if (selectedProvince === '全部省份' || spot.province === selectedProvince) {
+                cities.add(spot.city);
+            }
+        });
+
+        // 将所有城市选项追加到 options 中
+        const cityOptions = Array.from(cities).map((city, index) => ({
+            value: index + 1, // 从 1 开始，因为 0 是 "全部城市"
+            label: city
+        }));
+
+        // 更新城市选项，默认选中“全部城市”
+        this.setData({
+            'city.options': [{ value: 0, label: '全部城市' }, ...cityOptions],
+            'city.value': 0
+        });
+    },
+
+    /**
+     * 处理城市选择变化
+     * @param {Object} e - 事件对象
+     */
+    onCityChange(e) {
+        if (this.data.isPickerDisabled) {
+            return; // 如果 picker 被禁用，直接返回
+        }
+
+        const selectedIndex = parseInt(e.detail.value, 10);
+
+        // 禁用选择，防止用户多次点击
+        this.setData({ isPickerDisabled: true });
+
+        // 更新城市的索引
+        this.setData({
+            'city.value': selectedIndex
+        }, () => {
+            this.fetchSpotData(); // 重新加载景点数据
+
+            // 在 500ms 后重新启用选择
+            setTimeout(() => {
+                this.setData({ isPickerDisabled: false });
+            }, 500);
+        });
     },
 
     /**
@@ -56,11 +185,25 @@ Page({
      * @param {Object} e - 事件对象
      */
     onTypeChange(e) {
-        const selectedType = this.data.typeList[e.detail.value];
+        if (this.data.isPickerDisabled) {
+            return; // 如果 picker 被禁用，直接返回
+        }
+
+        const selectedIndex = parseInt(e.detail.value, 10);
+
+        // 禁用选择，防止用户多次点击
+        this.setData({ isPickerDisabled: true });
+
+        // 更新类型的索引
         this.setData({
-            selectedType: selectedType
+            'type.value': selectedIndex
         }, () => {
-            this.fetchSpotData(); // 更新类型后重新加载景点数据
+            this.fetchSpotData(); // 重新加载景点数据
+
+            // 在 500ms 后重新启用选择
+            setTimeout(() => {
+                this.setData({ isPickerDisabled: false });
+            }, 500);
         });
     },
 
@@ -68,112 +211,80 @@ Page({
      * 获取景点数据，可以选择使用模拟数据或通过API获取
      */
     fetchSpotData() {
-        if (this.data.useMockData) {
-            let filteredSpots = mockData.scenicSpots;
+        let filteredSpots = mockData.scenicSpots;
 
-            // 根据选择的省份进行筛选
-            if (this.data.selectedProvince !== '全部省份') {
-                filteredSpots = filteredSpots.filter(spot => spot.province === this.data.selectedProvince);
-            }
-
-            // 根据选择的城市进行筛选
-            if (this.data.selectedCity !== '全部城市') {
-                filteredSpots = filteredSpots.filter(spot => spot.city === this.data.selectedCity);
-            }
-
-            // 根据选择的类型进行筛选
-            if (this.data.selectedType !== '全部类型') {
-                filteredSpots = filteredSpots.filter(spot => spot.type === this.data.selectedType);
-            }
-
-            this.setData({
-                spots: filteredSpots
-            });
-        } else {
-            // 使用API获取景点数据
-            wx.request({
-                url: 'https://api.example.com/getSpots',
-                method: 'GET',
-                data: {
-                    province: this.data.selectedProvince,
-                    city: this.data.selectedCity,
-                    type: this.data.selectedType
-                },
-                success: (res) => {
-                    if (res.statusCode === 200 && res.data && Array.isArray(res.data.spots)) {
-                        this.setData({
-                            spots: res.data.spots
-                        });
-                    } else {
-                        console.error('Unexpected response structure:', res);
-                        wx.showToast({
-                            title: '数据加载失败',
-                            icon: 'none'
-                        });
-                    }
-                },
-                fail: (err) => {
-                    console.error('Error fetching spots data:', err);
-                    wx.showToast({
-                        title: '网络错误，请稍后重试',
-                        icon: 'none'
-                    });
-                }
-            });
+        // 根据选择的省份进行筛选
+        const selectedProvince = this.data.province.options[this.data.province.value].label;
+        if (selectedProvince !== '全部省份') {
+            filteredSpots = filteredSpots.filter(spot => spot.province === selectedProvince);
         }
+
+        // 根据选择的城市进行筛选
+        const selectedCity = this.data.city.options[this.data.city.value].label;
+        if (selectedCity !== '全部城市') {
+            filteredSpots = filteredSpots.filter(spot => spot.city === selectedCity);
+        }
+
+        // 根据选择的类型进行筛选
+        const selectedType = this.data.type.options[this.data.type.value].label;
+        if (selectedType !== '全部类型') {
+            filteredSpots = filteredSpots.filter(spot => spot.type === selectedType);
+        }
+
+        const favoriteSpotIds = this.data.favoriteSpotIds;
+        filteredSpots.forEach(spot => {
+            spot.isCollected = favoriteSpotIds.includes(spot.id);
+        })
+
+        this.setData({
+            spots: filteredSpots
+        });
     },
 
     /**
-     * 导航到景点详情页面
-     * @param {Object} e - 事件对象
-     */
-    navigateToDetail(e) {
-        const id = e.currentTarget.dataset.id;
-        if (id) {
-            wx.navigateTo({
-                url: `/pages/detail/index?id=${id}`
-            });
-        } else {
-            wx.showToast({
-                title: '无效的景点ID',
-                icon: 'none'
-            });
-        }
-    },
-
-    /**
-     * 切换景点的收藏状态
+     * 收藏或取消收藏景点
      * @param {Object} e - 事件对象
      */
     toggleCollect(e) {
-        const id = e.currentTarget.dataset.id;
-        if (!id) {
-            wx.showToast({
-                title: '无效的景点ID',
-                icon: 'none'
-            });
-            return;
+        const spotId = e.currentTarget.dataset.id; // 获取景点的 ID
+        let favoriteSpotIds = this.data.favoriteSpotIds.slice(); // 获取当前收藏的 ID 列表
+
+        // 检查是否已经收藏
+        if (favoriteSpotIds.includes(spotId)) {
+            // 如果已经收藏，则移除
+            favoriteSpotIds = favoriteSpotIds.filter(id => id !== spotId);
+        } else {
+            // 如果未收藏，则添加
+            favoriteSpotIds.push(spotId);
         }
 
-        const updatedSpots = this.data.spots.map(spot => {
-            if (spot.id === id) {
-                return { ...spot, isCollected: !spot.isCollected };
-            }
-            return spot;
+        // 更新本地存储
+        wx.setStorageSync('favoriteSpotIds', favoriteSpotIds);
+        console.log("explore-collect: ", wx.getStorageSync('favoriteSpotIds'));
+
+        // 更新收藏的状态到 data
+        this.setData({
+            favoriteSpotIds
         });
 
-        this.setData({ spots: updatedSpots }, () => {
-            // 将收藏状态保存到本地
-            wx.setStorageSync('scenicSpots', updatedSpots);
-        });
+        // 更新 spots 数据中的收藏状态
+        const index = this.data.spots.findIndex(spot => spot.id === spotId);
+        if (index !== -1) {
+            const spotsKey = `spots[${index}].isCollected`;
+            this.setData({
+                [spotsKey]: !this.data.spots[index].isCollected
+            });
+        }
     },
 
     /**
-     * （可选）保存收藏状态
-     * @param {string|number} id - 景点ID
-     * @param {boolean} isCollected - 收藏状态
+     * 导航到详情页面
+     * @param {Object} e - 事件对象
      */
-    // saveCollectionStatus(id, isCollected) {
-    //     // 实现收藏状态的保存逻辑，例如调用API或使用本地存储
-    // }
+    navigateToDetail(e) {
+        const spotId = e.currentTarget.dataset.id; // 获取景点的ID
+        wx.navigateTo({
+            url: `/pages/detail/index?id=${spotId}` // 假设详情页的路径为 pages/spotDetail/spotDetail
+        });
+    },
 });

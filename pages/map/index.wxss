@@ -1,7 +1,5 @@
 /* Overall Container */
 .container {
-    display: flex;
-    flex-direction: column;
     box-sizing: border-box;
     height: 100vh;
 }
@@ -22,14 +20,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 6px 2px;
+    padding: 2px;
     border-radius: 5px;
 }
 
 .button-icon {
     width: 24px;
     height: 24px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .button-text {
@@ -67,3 +65,101 @@
     color: #666;
     margin-top: 5px;
 }
+
+.block {
+    display: flex;
+    flex-direction: column;
+	width: 100vw;
+	height: 60vh;
+    background: var(--td-bg-color-container);
+	overflow: hidden;
+  }
+
+  .header {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	height: 100rpx;
+	border-bottom: 1px solid #e5e5e5;
+  }
+
+  .title {
+	flex: 1;
+	text-align: center;
+	font-weight: 600;
+	font-size: 36rpx;
+	color: var(--td-text-color-primary);
+  }
+
+  .btn {
+	font-size: 32rpx;
+	padding: 16rpx;
+  }
+
+  .btn--cancel {
+	color: var(--td-text-color-secondary);
+  }
+
+  .btn--confirm {
+	color: #0052d9;
+  }
+
+  .dialog-body {
+    display: flex;
+    flex-direction: column;
+	flex: 1;
+	padding: 20rpx;
+	overflow-y: scroll;
+	background: #f8f9fa;
+    text-align: left;
+  }
+
+  .dialog-footer {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	border-top: 1px solid #e5e5e5;
+	background-color: #ffffff;
+  }
+
+  .input-field {
+    flex: 1;
+	padding: 12rpx 12rpx 12rpx 16rpx;
+	border: 1px solid #ccc;
+	border-radius: 24rpx;
+	background-color: #f1f1f1;
+    max-height: 150rpx;
+    overflow-y: auto; /* 允许上下滑动 */
+    resize: none; /* 禁止用户手动拖动改变输入框大小 */
+	margin-right: 16rpx;
+  }
+
+  .send-btn {
+    width: auto;
+	height: auto;
+	border-radius: 50%;
+  }
+
+  .message {
+    padding: 12rpx;
+    margin-bottom: 16rpx;
+    border-radius: 12rpx;
+    display: inline-block; /* 使得单行文字时宽度自适应 */
+    max-width: 70%; /* 最大宽度 */
+    word-wrap: break-word;
+    white-space: pre-wrap; /* 处理换行符，确保换行正确显示 */
+  }
+
+  .user-message {
+	background-color: #007aff;
+	color: #ffffff;
+    align-self: flex-end;
+    text-align: right;
+  }
+
+  .ai-message {
+    min-width: 10%;
+    background-color: #e6e6e6;
+    color: #000000;
+    align-self: flex-start;
+  }

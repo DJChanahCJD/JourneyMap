@@ -10,8 +10,19 @@ Page({
   },
 
   onLoad: function (options) {
-    const spotId = options.id; // 获取从导航中传来的景点ID
+    const spotId = parseInt(options.id, 10); // 获取从导航中传来的景点ID
     this.loadSpotDetail(spotId); // 根据ID加载景点详情
+    // 从本地存储中获取收藏的ID列表
+    const favoriteSpotIds = wx.getStorageSync('favoriteSpotIds') || [];
+    // 判断当前景点是否被收藏
+    const isCollected = favoriteSpotIds.includes(spotId);
+    console.log("spotId: ", spotId);
+    console.log(favoriteSpotIds);
+    console.log("onLoad: ", isCollected);
+    // 更新页面收藏状态
+    this.setData({
+      collected: isCollected
+    });
   },
 
   // 根据景点ID加载详情
@@ -27,10 +38,28 @@ Page({
 
   // 收藏/取消收藏
   onCollectToggle: function () {
-    this.setData({
-      collected: !this.data.collected
-    });
+    const spotId = this.data.spot.id;
+    let favoriteSpotIds = wx.getStorageSync('favoriteSpotIds') || []; // 获取当前收藏的 ID 列表
 
+    // 检查是否已经收藏
+    if (favoriteSpotIds.includes(spotId)) {
+      // 如果已经收藏，则移除
+      favoriteSpotIds = favoriteSpotIds.filter(id => id !== spotId);
+      this.setData({ collected: false });
+      console.log("onCollectToggle: false", );
+    } else {
+      // 如果未收藏，则添加
+      favoriteSpotIds.push(spotId);
+      this.setData({ collected: true });
+      console.log("onCollectToggle: true", );
+    }
+
+    // 更新本地存储
+    wx.setStorageSync('favoriteSpotIds', favoriteSpotIds);
+    console.log("spotId: ", spotId);
+    console.log(wx.getStorageSync('favoriteSpotIds'));
+
+    // 显示提示
     wx.showToast({
       title: this.data.collected ? '已收藏' : '已取消收藏',
       icon: 'success'

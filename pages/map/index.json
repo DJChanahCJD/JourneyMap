@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "top-bar": "/components/top-bar/top-bar",
-    "nav-bar": "/components/nav-bar/nav-bar"
+    "t-popup": "tdesign-miniprogram/popup/popup",
+    "t-input": "tdesign-miniprogram/input/input"
   }
 }

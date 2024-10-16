@@ -13,7 +13,13 @@
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "/package.json",
+        "miniprogramNpmDistDir": "/"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -21,7 +27,9 @@
     },
     "compileWorklet": true,
     "condition": false,
-    "uglifyFileName": true
+    "uglifyFileName": true,
+    "swc": false,
+    "ignoreUploadUnusedFiles": true
   },
   "condition": {},
   "editorSetting": {

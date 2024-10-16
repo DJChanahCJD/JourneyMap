@@ -23,16 +23,22 @@
 
       <!-- 新增的右侧按钮组 -->
   <view class="right-button-group">
+    <view bindtap = "onAIButtonTap">
+      <view class="button-item">
+        <image src="/resources/robot-icon.png" class="button-icon"/>
+        <text class="button-text">AI</text>
+      </view>
+    </view>
     <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
         <view class="button-item">
           <image src="/resources/layer-icon.png" class="button-icon"/>
           <text class="button-text">{{selectedType == "全部" ? "分类" : selectedType}}</text>
         </view>
     </picker>
-    <navigator class="button-item" target="miniProgram" open-type="navigate" app-id="{{appId}}" extra-data="{{ extraData }}" version="release">
+    <view class="button-item" bindtap="navigateToFeedback">
       <image src="/resources/feedback-icon.png" class="button-icon"/>
       <text class="button-text">反馈</text>
-    </navigator>
+    </view>
   </view>
 
   <!-- 详情卡片-->
@@ -43,6 +49,30 @@
     </view>
 
    </view>
-    <!-- Improved Bottom Navigation Bar -->
-    <nav-bar></nav-bar>
+  <!-- Improved Bottom Navigation Bar -->
+  <nav-bar></nav-bar>
+
+  <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
+    <view class="block">
+      <view class="header">
+        <view class="btn btn--cancel" bindtap="closeDialog">取消</view>
+        <view class="title">旅小布 AI 助手</view>
+        <view class="btn btn--confirm" bindtap="confirmAction">确定</view>
+      </view>
+
+      <view class="dialog-body" scroll-y="true">
+        <block wx:for="{{messages}}" wx:key="index">
+          <view class="message user-message" wx:if="{{item.role === 'user'}}">{{item.content}}</view>
+          <view class="message ai-message" wx:if="{{item.role === 'ai'}}">
+            <rich-text nodes="{{item.content}}"></rich-text>
+          </view>
+        </block>
+      </view>
+
+      <view class="dialog-footer">
+        <textarea class="input-field" value="{{inputContent}}" placeholder="请输入您的问题..." maxlength="1024" auto-height />
+        <t-button class="send-btn" slot="suffix" theme="primary" size="extra-small" bindtap="sendMessage">发送</t-button>
+      </view>
+    </view>
+  </t-popup>
 </view>
