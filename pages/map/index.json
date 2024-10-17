@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "t-popup": "tdesign-miniprogram/popup/popup",
-    "t-input": "tdesign-miniprogram/input/input"
+    "t-popup": "/miniprogram_npm/tdesign-miniprogram/popup/popup",
+    "t-input": "/miniprogram_npm/tdesign-miniprogram/input/input"
   }
 }

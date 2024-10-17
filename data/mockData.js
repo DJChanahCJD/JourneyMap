@@ -12,7 +12,9 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市东城区景山前街4号",
+        contact: "010-12345678",
         hours: "08:30-17:00",
+        recommendation: "故宫博物院是中国明清两代的皇家宫殿，现为博物馆。",
         description: "故宫博物院是中国明清两代的皇家宫殿，现为博物馆。",
         isCollected: false
     },
@@ -27,7 +29,9 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市东城区长安街",
+        contact: "010-12345678",
         hours: "全天开放",
+        recommendation: "天安门广场是世界上最大的城市广场，位于北京市的中心位置。",
         description: "天安门广场是世界上最大的城市广场，位于北京市的中心位置。",
         isCollected: false
     },
@@ -42,7 +46,9 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市海淀区新建宫门路19号",
+        contact: "010-12345678",
         hours: "07:00-18:00",
+        recommendation: "颐和园是中国清朝时期的皇家园林，具有悠久的历史和丰富的文化内涵。",
         description: "颐和园是中国清朝时期的皇家园林，具有悠久的历史和丰富的文化内涵。",
         isCollected: false
     },
@@ -57,6 +63,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区文津街1号",
+        contact: "010-12345678",
         hours: "06:00-21:00",
         description: "北海公园是中国最古老、保存最完整的皇家园林之一，园内景色优美。",
         isCollected: false
@@ -72,6 +79,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市海淀区清华西路28号",
+        contact: "010-12345678",
         hours: "07:00-17:30",
         description: "圆明园曾是清代皇家园林，有着辉煌的历史，如今被誉为中国近代史的见证。",
         isCollected: false
@@ -87,6 +95,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市昌平区十三陵镇",
+        contact: "010-12345678",
         hours: "08:00-17:00",
         description: "十三陵是明朝十三位皇帝的陵墓群，现为著名的历史遗址。",
         isCollected: false
@@ -102,6 +111,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区西直门外大街137号",
+        contact: "010-12345678",
         hours: "07:30-18:00",
         description: "北京动物园是中国最早开放的动物园，拥有丰富的动植物资源。",
         isCollected: false
@@ -117,6 +127,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区国家体育场南路1号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "鸟巢是2008年北京奥运会的主体育场，现已成为北京的地标性建筑。",
         isCollected: false
@@ -132,6 +143,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区天辰东路11号",
+        contact: "010-12345678",
         hours: "09:00-18:00",
         description: "水立方是2008年北京奥运会的重要场馆，外形独特，如同水中的气泡。",
         isCollected: false
@@ -147,6 +159,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市海淀区香山路",
+        contact: "010-12345678",
         hours: "07:00-17:00",
         description: "北京植物园占地面积很大，园内种植了来自世界各地的珍稀植物。",
         isCollected: false
@@ -162,6 +175,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区景山前街",
+        contact: "010-12345678",
         hours: "06:30-21:00",
         description: "景山公园位于紫禁城北侧，山顶可俯瞰整个紫禁城和北京市区。",
         isCollected: false
@@ -177,6 +191,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市东城区东长安街16号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "中国国家博物馆是展示中华文明历史的重要场所，收藏了大量珍贵文物。",
         isCollected: false
@@ -192,6 +207,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区酒仙桥路4号",
+        contact: "010-12345678",
         hours: "10:00-18:00",
         description: "798艺术区是北京著名的艺术文化社区，聚集了众多艺术家和画廊。",
         isCollected: false
@@ -207,6 +223,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市东城区天坛路",
+        contact: "010-12345678",
         hours: "06:00-21:00",
         description: "天坛是明清两代皇帝祭天祈谷的地方，现为国家重点文物保护单位。",
         isCollected: false
@@ -222,6 +239,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区前海西街17号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "恭王府是清代规模最大的王府之一，有着极高的历史和艺术价值。",
         isCollected: false
@@ -237,6 +255,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区北辰东路5号",
+        contact: "010-12345678",
         hours: "09:30-16:30",
         description: "中国科学技术馆是面向公众普及科学知识的重要场所。",
         isCollected: false
@@ -252,6 +271,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市海淀区香山公园",
+        contact: "010-12345678",
         hours: "06:00-18:30",
         description: "香山公园是北京著名的风景区，秋季的红叶吸引了大量游客。",
         isCollected: false
@@ -267,6 +287,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市丰台区卢沟桥城关镇",
+        contact: "010-12345678",
         hours: "全天开放",
         description: "卢沟桥是北京著名的历史古桥，也是抗日战争爆发的重要历史遗址。",
         isCollected: false
@@ -282,6 +303,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区民族园路1号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "中华民族园展示了中国少数民族的文化、风俗和建筑，是一个多民族文化融合的景点。",
         isCollected: false
@@ -297,6 +319,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区西直门外大街138号",
+        contact: "010-12345678",
         hours: "09:00-16:30",
         description: "北京天文馆是科学教育的场所，馆内有丰富的天文知识展示和设备。",
         isCollected: false
@@ -312,6 +335,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区复兴门外大街16号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "首都博物馆收藏了大量北京历史文物，是了解北京历史文化的重要场所。",
         isCollected: false
@@ -327,6 +351,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市朝阳区北辰东路",
+        contact: "010-12345678",
         hours: "06:00-21:00",
         description: "奥林匹克森林公园是2008年奥运会的重要绿化工程，园内环境优美。",
         isCollected: false
@@ -342,6 +367,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市西城区太平街19号",
+        contact: "010-12345678",
         hours: "06:00-21:00",
         description: "陶然亭公园是北京市区著名的历史文化公园，以陶然亭而得名。",
         isCollected: false
@@ -357,6 +383,7 @@ const scenicSpots = [
         province: "北京市",
         city: "北京市",
         address: "北京市东城区左安门内大街1号",
+        contact: "010-12345678",
         hours: "09:00-17:00",
         description: "北京游乐园曾是北京市民娱乐休闲的重要场所，园内设有各种游乐设施。",
         isCollected: false
@@ -387,6 +414,7 @@ const scenicSpots = [
         province: "浙江省",
         city: "杭州市",
         address: "浙江省杭州市西湖区",
+        contact: "010-12345678",
         hours: "全天开放",
         description: "西湖是中国最著名的淡水湖泊之一，以其秀丽的风景和丰富的文化底蕴闻名于世。",
         isCollected: false
@@ -402,6 +430,7 @@ const scenicSpots = [
         province: "广西壮族自治区",
         city: "桂林市",
         address: "广西壮族自治区桂林市",
+        contact: "010-12345678",
         hours: "全天开放",
         description: "漓江以其奇特的喀斯特地貌和秀丽的山水景观，被誉为中国最美的河流之一。",
         isCollected: false
@@ -432,6 +461,7 @@ const scenicSpots = [
         province: "江苏省",
         city: "苏州市",
         address: "江苏省苏州市姑苏区",
+        contact: "010-12345678",
         hours: "07:30-18:00",
         description: "苏州园林以其精巧的设计和优美的景观著称，是中国古典园林的代表。",
         isCollected: false
@@ -447,6 +477,7 @@ const scenicSpots = [
         province: "上海市",
         city: "上海市",
         address: "上海市黄浦区中山东一路",
+        contact: "010-12345678",
         hours: "全天开放",
         description: "外滩是上海的标志性景点，沿岸有众多历史建筑和现代高楼，夜景尤为迷人。",
         isCollected: false
@@ -462,6 +493,7 @@ const scenicSpots = [
         province: "香港特别行政区",
         city: "香港",
         address: "香港维多利亚港",
+        contact: "010-12345678",
         hours: "全天开放",
         description: "维多利亚港是香港的标志性景点，以其璀璨的夜景和繁忙的港口闻名。",
         isCollected: false
@@ -477,6 +509,7 @@ const scenicSpots = [
         province: "澳门特别行政区",
         city: "澳门",
         address: "澳门氹仔嘉模堂区",
+        contact: "010-12345678",
         hours: "09:00-22:00",
         description: "澳门旅游塔是澳门的地标建筑，提供观景台、餐厅和各种娱乐设施。",
         isCollected: false

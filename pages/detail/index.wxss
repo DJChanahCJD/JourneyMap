@@ -1,65 +1,91 @@
-/* pages/detail/index.wxss */
-.detail-container {
-	padding: 40px 20px;
-	background-color: #f8f8f8;
-	height: 100vh;
-}
+/* 通用容器样式 */
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20rpx;
+  }
 
-  .detail-image {
+  /* 店铺轮播图样式 */
+  .main-image {
 	width: 100%;
-	height: 200px;
-	border-radius: 10px;
-	margin-bottom: 20px;
+	height: 400rpx;
+	margin-bottom: 80rpx;
   }
 
-  .detail-header {
-	margin-bottom: 15px;
+  /* 图片列表样式 */
+  .image-list-container {
+	width: 100%;
+	white-space: nowrap;
+	margin-bottom: 20rpx;
   }
 
-  .detail-title {
-	font-size: 24px;
+  .image-list {
+	display: inline-block;
+	}
+
+  .list-image {
+	display: inline-block;
+	width: 160rpx;
+	height: 160rpx;
+	margin-right: 20rpx;
+	border-radius: 8rpx;
+	box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.2);
+  }
+
+  /* 可以添加一个激活状态的样式 */
+  .list-image.active {
+	border: 2rpx solid #199cad;
+  }
+
+  /* 信息卡片样式 */
+  .info-card {
+	width: 100%;
+	background-color: #ffffff;
+	padding: 20rpx;
+	border-radius: 10rpx;
+	box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.1);
+	margin-bottom: 20rpx;
+  }
+
+  .shop-name {
+	font-size: 36rpx;
 	font-weight: bold;
-	color: #333;
-  }
-
-  .detail-info {
-	background-color: #fff;
-	padding: 15px;
-	border-radius: 10px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 10rpx;
   }
 
   .info-item {
 	display: flex;
-	justify-content: space-between;
-	margin-bottom: 10px;
+	align-items: center;
+	margin-bottom: 10rpx;
   }
 
-  .info-label {
-	font-weight: bold;
-	color: #666;
+  .nav-button {
+	margin-left: 20rpx;
+	padding: 10rpx 20rpx;
+	background-color: #1aad19;
+	color: #ffffff;
+	border-radius: 5rpx;
   }
 
-  .info-value {
-	color: #333;
-  }
-
-  .info-description {
-	margin-top: 15px;
-	font-size: 16px;
-	color: #555;
-  }
-
-  .collect-button {
+  /* 详细介绍部分样式 */
+  .description-section {
 	width: 100%;
-	margin-top: 20px;
-	--td-button-primary-bg-color: #ffd700;
-	--td-button-primary-border-color: #ffd700;
-	--td-button-primary-active-bg-color: #e8c800;
-	color: #fff;
-	border: none;
-	padding: 10px 0;
-	border-radius: 10px;
+	background-color: #f0f0f0;
+	background-size: cover;
+	padding: 30rpx;
+	border-radius: 10rpx;
+	color: #000000;
+	text-align: center;
+  }
+
+  .description-title {
+	font-size: 32rpx;
 	font-weight: bold;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	text-decoration: underline;
+	margin-bottom: 10rpx;
+  }
+
+  .description-content {
+	font-size: 28rpx;
   }

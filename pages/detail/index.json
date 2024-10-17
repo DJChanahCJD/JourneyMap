@@ -3,6 +3,6 @@
   "navigationBarTitleText": "详情",
   "component": true,
   "usingComponents": {
-
+    "t-swiper": "/miniprogram_npm/tdesign-miniprogram/swiper/swiper"
   }
 }
