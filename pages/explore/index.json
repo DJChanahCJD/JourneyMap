@@ -3,8 +3,7 @@
   "usingComponents": {
     "t-dropdown-menu": "/miniprogram_npm/tdesign-miniprogram/dropdown-menu/dropdown-menu",
     "t-dropdown-item": "/miniprogram_npm/tdesign-miniprogram/dropdown-item/dropdown-item",
-    "t-pull-down-refresh": "/miniprogram_npm/tdesign-miniprogram/pull-down-refresh/pull-down-refresh",
-    "t-skeleton": "/miniprogram_npm/tdesign-miniprogram/skeleton/skeleton",
-    "t-back-top": "/miniprogram_npm/tdesign-miniprogram/back-top/back-top"
-  }
+    "spot-card": "/components/spot-card/spot-card"
+  },
+  "navigationStyle": "custom"
 }

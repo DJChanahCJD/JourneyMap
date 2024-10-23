@@ -1,6 +1,8 @@
 {
   "usingComponents": {
     "t-popup": "/miniprogram_npm/tdesign-miniprogram/popup/popup",
-    "t-input": "/miniprogram_npm/tdesign-miniprogram/input/input"
-  }
+    "spot-card": "/components/spot-card/spot-card"
+  },
+  "navigationStyle": "custom"
+
 }

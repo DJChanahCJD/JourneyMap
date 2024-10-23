@@ -1,10 +1,11 @@
 // mockData.js
+const imageUrl = "https://imgtg-12w.pages.dev/file/17d1715f4d25eb8dac62b.jpg";
 
 const scenicSpots = [
     {
         id: 0,
         name: "故宫博物院",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.916344,
         longitude: 116.397155,
         iconPath: '',
@@ -21,7 +22,7 @@ const scenicSpots = [
     {
         id: 1,
         name: "天安门广场",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.908722,
         longitude: 116.397499,
         iconPath: '',
@@ -38,7 +39,7 @@ const scenicSpots = [
     {
         id: 2,
         name: "颐和园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.999912,
         longitude: 116.275522,
         iconPath: '',
@@ -55,7 +56,7 @@ const scenicSpots = [
     {
         id: 3,
         name: "北海公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.924091,
         longitude: 116.389619,
         iconPath: '',
@@ -71,7 +72,7 @@ const scenicSpots = [
     {
         id: 4,
         name: "圆明园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 40.007634,
         longitude: 116.303978,
         iconPath: '',
@@ -87,7 +88,7 @@ const scenicSpots = [
     {
         id: 5,
         name: "十三陵",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 40.255982,
         longitude: 116.220295,
         iconPath: '',
@@ -103,7 +104,7 @@ const scenicSpots = [
     {
         id: 6,
         name: "北京动物园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.938839,
         longitude: 116.333146,
         iconPath: '',
@@ -119,7 +120,7 @@ const scenicSpots = [
     {
         id: 7,
         name: "鸟巢（国家体育场）",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.992934,
         longitude: 116.396987,
         iconPath: '',
@@ -135,7 +136,7 @@ const scenicSpots = [
     {
         id: 8,
         name: "水立方（国家游泳中心）",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.994976,
         longitude: 116.390292,
         iconPath: '',
@@ -151,7 +152,7 @@ const scenicSpots = [
     {
         id: 9,
         name: "北京植物园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.993356,
         longitude: 116.204877,
         iconPath: '',
@@ -167,7 +168,7 @@ const scenicSpots = [
     {
         id: 10,
         name: "景山公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.925677,
         longitude: 116.397026,
         iconPath: '',
@@ -183,7 +184,7 @@ const scenicSpots = [
     {
         id: 11,
         name: "中国国家博物馆",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.905728,
         longitude: 116.397479,
         iconPath: '',
@@ -199,7 +200,7 @@ const scenicSpots = [
     {
         id: 12,
         name: "798艺术区",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.984198,
         longitude: 116.495376,
         iconPath: '',
@@ -215,7 +216,7 @@ const scenicSpots = [
     {
         id: 13,
         name: "天坛公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.882342,
         longitude: 116.412831,
         iconPath: '',
@@ -231,7 +232,7 @@ const scenicSpots = [
     {
         id: 14,
         name: "恭王府",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.938341,
         longitude: 116.384604,
         iconPath: '',
@@ -247,7 +248,7 @@ const scenicSpots = [
     {
         id: 15,
         name: "中国科学技术馆",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 40.000317,
         longitude: 116.398530,
         iconPath: '',
@@ -263,7 +264,7 @@ const scenicSpots = [
     {
         id: 16,
         name: "香山公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.998518,
         longitude: 116.188245,
         iconPath: '',
@@ -279,7 +280,7 @@ const scenicSpots = [
     {
         id: 17,
         name: "卢沟桥",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.857839,
         longitude: 116.217808,
         iconPath: '',
@@ -295,7 +296,7 @@ const scenicSpots = [
     {
         id: 18,
         name: "中华民族园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.982192,
         longitude: 116.376313,
         iconPath: '',
@@ -311,7 +312,7 @@ const scenicSpots = [
     {
         id: 19,
         name: "北京天文馆",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.943502,
         longitude: 116.333159,
         iconPath: '',
@@ -327,7 +328,7 @@ const scenicSpots = [
     {
         id: 20,
         name: "首都博物馆",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.912345,
         longitude: 116.343849,
         iconPath: '',
@@ -343,7 +344,7 @@ const scenicSpots = [
     {
         id: 21,
         name: "奥林匹克森林公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 40.010323,
         longitude: 116.392630,
         iconPath: '',
@@ -359,7 +360,7 @@ const scenicSpots = [
     {
         id: 22,
         name: "陶然亭公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.878456,
         longitude: 116.378812,
         iconPath: '',
@@ -375,7 +376,7 @@ const scenicSpots = [
     {
         id: 23,
         name: "北京游乐园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 39.886678,
         longitude: 116.437718,
         iconPath: '',
@@ -391,7 +392,7 @@ const scenicSpots = [
     {
         id: 24,
         name: "珠江新城公园",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 23.1291,
         longitude: 113.2644,
         iconPath: '',
@@ -406,7 +407,7 @@ const scenicSpots = [
     {
         id: 25,
         name: "西湖",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 30.259244,
         longitude: 120.155070,
         iconPath: '',
@@ -422,7 +423,7 @@ const scenicSpots = [
     {
         id: 26,
         name: "桂林漓江",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 25.2744,
         longitude: 110.1239,
         iconPath: '',
@@ -438,7 +439,7 @@ const scenicSpots = [
     {
         id: 27,
         name: "长城（八达岭段）",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 40.431908,
         longitude: 116.570374,
         iconPath: '',
@@ -453,7 +454,7 @@ const scenicSpots = [
     {
         id: 28,
         name: "苏州园林",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 31.298886,
         longitude: 120.585316,
         iconPath: '',
@@ -469,7 +470,7 @@ const scenicSpots = [
     {
         id: 29,
         name: "上海外滩",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 31.240059,
         longitude: 121.499840,
         iconPath: '',
@@ -485,7 +486,7 @@ const scenicSpots = [
     {
         id: 30,
         name: "维多利亚港",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 22.2833,
         longitude: 114.1582,
         iconPath: '',
@@ -501,7 +502,7 @@ const scenicSpots = [
     {
         id: 31,
         name: "澳门旅游塔",
-        image: "/resources/default-image.png",
+        image: imageUrl,
         latitude: 22.2028,
         longitude: 113.5444,
         iconPath: '',

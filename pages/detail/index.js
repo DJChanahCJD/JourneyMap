@@ -2,7 +2,8 @@
 
 // 引入模拟数据
 const mockData = require('../../data/mockData.js');
-
+const imageUrl = "https://imgtg-12w.pages.dev/file/17d1715f4d25eb8dac62b.jpg";
+const app = getApp();
 Page({
   data: {
     spot: {}, // 保存景点的详细信息
@@ -16,6 +17,7 @@ Page({
 
   onLoad: function (options) {
     const spotId = parseInt(options.id, 10); // 获取从导航中传来的景点ID
+    console.log("detail: ", options);
     this.loadSpotDetail(spotId); // 根据ID加载景点详情
 
     // 更新页面标题为店铺名称
@@ -36,16 +38,12 @@ Page({
     // 模拟获取景点数据（可以替换为网络请求）
     const spot = mockData.scenicSpots.find(spot => spot.id == id);
     if (spot) {
-      const imageCdn = 'https://tdesign.gtimg.com/mobile/demos';
       // 添加示例图片URL
       spot.images = [
-        `${imageCdn}/swiper1.png`,
-        `${imageCdn}/swiper2.png`,
-        `${imageCdn}/swiper1.png`,
-        `${imageCdn}/swiper2.png`,
-        `${imageCdn}/swiper1.png`,
-        `${imageCdn}/swiper2.png`,
-        `${imageCdn}/swiper1.png`,
+        imageUrl,
+        imageUrl,
+        imageUrl,
+        imageUrl
       ];
       this.setData({
         spot: spot
@@ -66,7 +64,7 @@ Page({
       this.setData({ collected: true });
     }
 
-    wx.setStorageSync('favoriteSpotIds', favoriteSpotIds);
+    app.updateFavoriteSpotIds(favoriteSpotIds);
     wx.showToast({
       title: this.data.collected ? '已收藏' : '已取消收藏',
       icon: 'success'

@@ -1,56 +1,46 @@
 <view class="container">
-    <top-bar></top-bar>
-    <map
-        id="map"
-        class="map"
-        show-location
-        subkey="{{subkey}}"
-        longitude="{{longitude}}"
-        latitude="{{latitude}}"
-        scale="13"
-        markers="{{markers}}"
-        bindmarkertap="onMarkerTap"
-        enable-3D="false"
-        show-compass="true"
-        enable-poi="true"
-        show-scale="true"
-        enable-zoom="true"
-        enable-scroll="true"
-        enable-rotate="false"
-        enable-overlooking="true"
-        style="width: 100%; height: 100vh; display: block;"
-    ></map>
+  <top-bar></top-bar>
+
+  <map
+      id="map"
+      class="map"
+      show-location
+      subkey="{{subkey}}"
+      longitude="{{longitude}}"
+      latitude="{{latitude}}"
+      scale="12"
+      markers="{{markers}}"
+      bindmarkertap="onMarkerTap"
+      enable-3D="false"
+      show-compass="true"
+      enable-poi="true"
+      show-scale="true"
+      enable-zoom="true"
+      enable-scroll="true"
+      enable-rotate="false"
+      enable-overlooking="true"
+      style="width: 100%; height: 100vh; display: block;"
+  ></map>
 
       <!-- 新增的右侧按钮组 -->
   <view class="right-button-group">
-    <view bindtap = "onAIButtonTap">
-      <view class="button-item">
-        <image src="/resources/robot-icon.png" class="button-icon"/>
-        <text class="button-text">AI</text>
-      </view>
-    </view>
+    <button class="button-item" bindtap = "onAIButtonTap">
+      <image src="/resources/robot-icon.png" class="button-icon"/>
+      <text class="button-text">AI</text>
+    </button>
     <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
-        <view class="button-item">
+        <button class="button-item">
           <image src="/resources/layer-icon.png" class="button-icon"/>
           <text class="button-text">{{selectedType == "全部" ? "分类" : selectedType}}</text>
-        </view>
+        </button>
     </picker>
-    <view class="button-item" bindtap="navigateToFeedback">
-      <image src="/resources/feedback-icon.png" class="button-icon"/>
+    <button class="button-item" bindtap="navigateToFeedback">
+      <image src="/resources/feedback-icon.png" class="button-icon feedback-icon"/>
       <text class="button-text">反馈</text>
-    </view>
+    </button>
   </view>
 
-  <!-- 详情卡片-->
-   <view wx:if="{{selectedSpot}}" class="detail-card" bindtap="navigateToDetail">
-    <view class="detail-content">
-        <text class="detail-title">{{selectedSpot.name}}</text>
-        <text class="detail-description">点击查看详情</text>
-    </view>
-
-   </view>
-  <!-- Improved Bottom Navigation Bar -->
-  <nav-bar></nav-bar>
+  <spot-card class="detail-card" wx:if="{{selectedSpot && isShow}}" spot="{{selectedSpot}}" />
 
   <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
     <view class="block">
@@ -59,7 +49,6 @@
         <view class="title">旅小布 AI 助手</view>
         <view class="btn btn--confirm" bindtap="confirmAction">确定</view>
       </view>
-
       <view class="dialog-body" scroll-y="true">
         <block wx:for="{{messages}}" wx:key="index">
           <view class="message user-message" wx:if="{{item.role === 'user'}}">{{item.content}}</view>
@@ -68,11 +57,12 @@
           </view>
         </block>
       </view>
-
       <view class="dialog-footer">
         <textarea class="input-field" value="{{inputContent}}" placeholder="请输入您的问题..." maxlength="1024" auto-height />
         <t-button class="send-btn" slot="suffix" theme="primary" size="extra-small" bindtap="sendMessage">发送</t-button>
       </view>
     </view>
   </t-popup>
+
+  <nav-bar class="nav-bar" />
 </view>

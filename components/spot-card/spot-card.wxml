@@ -1,0 +1,34 @@
+<view class="card-container" bindtap="navigateToDetail" data-id="{{spot.id}}">
+	<image class="card-image" src="{{spot.image}}" mode="aspectFill"></image>
+	<view class="card-info">
+		<view class="header-container">
+			<view class="card-title-container">
+				<text class="card-title">{{spot.name}}</text>
+				<view class="tag-container">
+					<text class="tag">小众</text>
+					<text class="tag">必去</text>
+					<text class="tag">住宿</text>
+				</view>
+				<view class="collect-icon" catchtap="toggleCollect" data-id="{{spot.id}}">
+					<image
+						class="collect-icon"
+						src="{{isCollected ? '/resources/filled-star.svg' : '/resources/empty-star.svg'}}"
+						mode="scaleToFill"
+					/>
+				</view>
+			</view>
+			<view class="service-container">
+				<view class="service">景点</view>
+				<view class="service">美食</view>
+				<view class="service">住宿</view>
+			</view>
+			<text class="card-description">{{spot.description}}</text>
+		</view>
+		<view class="footer-container">
+			<view class="address">
+				<text class="address-text">{{spot.address}}</text>
+			</view>
+		</view>
+	</view>
+
+</view>

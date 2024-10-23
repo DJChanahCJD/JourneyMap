@@ -2,6 +2,7 @@
 .container {
     box-sizing: border-box;
     height: 100vh;
+    overflow: hidden;
 }
 
 .right-button-group {
@@ -17,17 +18,32 @@
 }
 
 .button-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2px;
-    border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px;
+  border: none !important;
+  border-radius: 5px;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  transition: transform 0.1s ease, opacity 0.1s ease; /* 添加过渡效果 */
+}
+
+.button-item:active {
+  transform: scale(0.95); /* 点击时稍微缩小 */
+  opacity: 0.8; /* 点击时稍微降低透明度 */
 }
 
 .button-icon {
     width: 24px;
     height: 24px;
     margin-bottom: 2px;
+}
+
+.feedback-icon {
+  width: 23px;
+  height: 23px;
 }
 
 .button-text {
@@ -38,39 +54,16 @@
 /* detail card */
 .detail-card {
     position: absolute;
-    bottom: 14%;
-    left: 10%;
-    right: 10%;
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    scale: 0.95;
+    bottom: 160rpx;
     z-index: 1000;
-}
-
-.detail-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.detail-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-}
-
-.detail-description {
-    font-size: 14px;
-    color: #666;
-    margin-top: 5px;
 }
 
 .block {
     display: flex;
     flex-direction: column;
-	width: 100vw;
-	height: 60vh;
+    width: 100vw;
+    height: 60vh;
     background: var(--td-bg-color-container);
 	overflow: hidden;
   }
@@ -128,9 +121,9 @@
 	border: 1px solid #ccc;
 	border-radius: 24rpx;
 	background-color: #f1f1f1;
-    max-height: 150rpx;
-    overflow-y: auto; /* 允许上下滑动 */
-    resize: none; /* 禁止用户手动拖动改变输入框大小 */
+  max-height: 150rpx;
+  overflow-y: auto; /* 允许上下滑动 */
+  resize: none; /* 禁止用户手动拖动改变输入框大小 */
 	margin-right: 16rpx;
   }
 
@@ -163,3 +156,18 @@
     color: #000000;
     align-self: flex-start;
   }
+
+/* 如果是按钮元素，可能需要额外的重置 */
+button.button-item {
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+/* 移除按钮的默认样式（微信小程序特有） */
+button.button-item::after {
+    border: none;
+}

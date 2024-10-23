@@ -23,8 +23,6 @@ Page({
         spots: [], // 景点数据列表
         favoriteSpotIds: [], // 用户收藏的景点ID列表
         isPickerDisabled: false, // 是否禁用下拉选择栏
-        enableRefresh: false, // 控制下拉刷新的状态
-        scrollTop: 0 // 滚动位置
     },
 
     onLoad() {
@@ -36,30 +34,9 @@ Page({
         this.fetchSpotData(); // 初始加载景点数据
     },
 
-    /**
-     * 下拉刷新事件处理
-     */
-    onRefresh() {
-        // 设置刷新中状态为true
-        this.setData({ enableRefresh: true });
-
-        // 模拟数据加载，延迟刷新完成
-        setTimeout(() => {
-            // 重新加载筛选项和景点数据
-            this.generateFilterOptions();
-            this.fetchSpotData();
-            // 刷新完成后设置状态为false
-            this.setData({ enableRefresh: false });
-        }, 1500);
-    },
-
-    /**
-     * 页面滚动事件处理
-     * @param {Object} e - 事件对象
-     */
-    onScroll(e) {
-        const { scrollTop } = e.detail;
-        this.setData({ scrollTop });
+    onShow() {
+        this.setData({ favoriteSpotIds: wx.getStorageSync('favoriteSpotIds') || [] });
+        this.fetchSpotData();
     },
 
     /**
@@ -239,52 +216,8 @@ Page({
         this.setData({
             spots: filteredSpots
         });
+        console.log("explore: ", this.data.spots);
     },
 
-    /**
-     * 收藏或取消收藏景点
-     * @param {Object} e - 事件对象
-     */
-    toggleCollect(e) {
-        const spotId = e.currentTarget.dataset.id; // 获取景点的 ID
-        let favoriteSpotIds = this.data.favoriteSpotIds.slice(); // 获取当前收藏的 ID 列表
 
-        // 检查是否已经收藏
-        if (favoriteSpotIds.includes(spotId)) {
-            // 如果已经收藏，则移除
-            favoriteSpotIds = favoriteSpotIds.filter(id => id !== spotId);
-        } else {
-            // 如果未收藏，则添加
-            favoriteSpotIds.push(spotId);
-        }
-
-        // 更新本地存储
-        wx.setStorageSync('favoriteSpotIds', favoriteSpotIds);
-        console.log("explore-collect: ", wx.getStorageSync('favoriteSpotIds'));
-
-        // 更新收藏的状态到 data
-        this.setData({
-            favoriteSpotIds
-        });
-
-        // 更新 spots 数据中的收藏状态
-        const index = this.data.spots.findIndex(spot => spot.id === spotId);
-        if (index !== -1) {
-            const spotsKey = `spots[${index}].isCollected`;
-            this.setData({
-                [spotsKey]: !this.data.spots[index].isCollected
-            });
-        }
-    },
-
-    /**
-     * 导航到详情页面
-     * @param {Object} e - 事件对象
-     */
-    navigateToDetail(e) {
-        const spotId = e.currentTarget.dataset.id; // 获取景点的ID
-        wx.navigateTo({
-            url: `/pages/detail/index?id=${spotId}` // 假设详情页的路径为 pages/spotDetail/spotDetail
-        });
-    },
 });

@@ -8,38 +8,15 @@
     <t-dropdown-item options="{{type.options}}" value="{{type.value}}" bindchange="onTypeChange" />
   </t-dropdown-menu>
 
-  <t-pull-down-refresh
-    value="{{enableRefresh}}"
-    loadingTexts="{{['下拉刷新', '松手刷新', '正在刷新', '刷新完成']}}"
-    bind:refresh="onRefresh"
-    bind:scroll="onScroll"
-  >
-    <!-- 景点列表 -->
-    <view class="spot-list">
-      <block wx:for="{{spots}}" wx:key="id">
-        <view class="spot-item" bindtap="navigateToDetail" data-id="{{item.id}}">
-          <image class="spot-image" src="{{item.image}}"></image>
-          <view class="spot-info">
-            <text class="spot-name">{{item.name}}</text>
-            <text class="spot-tags">
-              {{item.type}}</text>
-            <text class="spot-hours">
-              开放时间：{{item.hours}}</text>
-            <text class="spot-address">
-              地址：{{item.address}}</text>
-          </view>
-          <t-button theme="primary" class="collect-button" bindtap="toggleCollect" data-id="{{item.id}}">
-            <text>{{item.isCollected ? '已收藏' : '收藏'}}</text>
-          </t-button>
-        </view>
-      </block>
-      <!-- 无数据提示 -->
-      <view wx:if="{{spots.length === 0}}" class="no-data">
-        <text>暂无景点数据</text>
-      </view>
-      <t-back-top text="顶部" scroll-top="{{scrollTop}}" visibility-height="{{100}}" />
+
+  <!-- 景点列表 -->
+  <view class="spot-list">
+    <spot-card class="spot-item" wx:for="{{spots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" />
+    <!-- 无数据提示 -->
+    <view wx:if="{{spots.length === 0}}" class="no-data">
+      <text>暂无景点数据</text>
     </view>
-  </t-pull-down-refresh>
+  </view>
 
   <!-- 底部导航栏 -->
   <nav-bar></nav-bar>

@@ -1,0 +1,127 @@
+
+
+  .card-container {
+	position: relative;
+	display: flex;
+	height: 240rpx;
+	border-radius: 12rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+	border: 1rpx solid #e0e0e0;
+	background-color: #fff;
+	margin: 6rpx 12rpx;
+	z-index: 1000;
+  }
+
+
+
+  .card-info {
+	display: flex;
+	flex-direction: column;
+	flex:1;
+	padding: 24rpx;
+  }
+
+  .header-container {
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+  }
+
+  .card-image {
+	height:auto;
+	width: 225rpx;
+	border-radius: 12rpx 0 0 12rpx;
+	object-fit: cover;
+  }
+
+  .card-title-container {
+	display: flex;
+  }
+
+  .card-title {
+	font-size: 28rpx;
+	font-weight: bold;
+	margin-right: 12rpx;
+  }
+
+  .tag-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+	align-items: center;
+  }
+
+  .tag {
+	background-color: #FFD700;
+	color: #000000;
+	padding: 2rpx 6rpx;
+	border-radius: 12rpx;
+	font-size: 18rpx;
+  }
+
+  .collect-icon {
+	height: 32rpx;
+	width: 32rpx;
+	padding: 4rpx;
+	margin-left: auto;
+  }
+
+  .service-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+  }
+
+  .service {
+	background-color: #f0f0f0;
+	color: #333;
+	padding: 2rpx 6rpx;
+	border-radius: 12rpx;
+	font-size: 18rpx;
+  }
+
+  .card-description {
+	font-size: 20rpx;
+	color: #3a3a3a;
+  }
+
+  .footer-container {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+	bottom: 0;
+	margin-bottom: 6rpx;
+  }
+
+  .address-text {
+	font-size: 18rpx;
+	color: #999;
+  }
+
+
+
+
+
+  /* .card-details {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24rpx;
+	font-size: 26rpx;
+  }
+
+  .details-title {
+	font-weight: bold;
+	margin-bottom: 8rpx;
+  }
+
+  .details-list text {
+	display: block;
+	margin-top: 4rpx;
+  }
+
+  .card-footer {
+	margin-top: 24rpx;
+	color: #888;
+	font-size: 26rpx;
+  } */

@@ -5,60 +5,10 @@
   .spot-list {
     display: flex;
     flex-direction: column;
-    gap: 20rpx;
   }
 
   .spot-item {
-  background-color: #ffffff;
-  border-radius: 10rpx;
-  margin: 20rpx 10rpx;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
-  padding: 20rpx;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  }
-
-  .spot-image {
-    width: 100rpx;
-    height: 100rpx;
-    border-radius: 8rpx;
-    margin-right: 20rpx;
-    object-fit: cover;
-  }
-
-  .spot-info {
-    flex: 1;
-    padding: 4px;
-  }
-
-  .spot-name {
-    font-size: 32rpx;
-    color: #333333;
-    font-weight: bold;
-  }
-
-  .spot-tags {
-    color: #FFD700;
-    margin-top: 10rpx;
-  }
-
-  .spot-address {
-    font-size: 26rpx;
-    color: #888888;
-    margin-top: 10rpx;
-  }
-
-  .collect-button {
-    --td-button-primary-bg-color: #ffd700;
-    --td-button-primary-border-color: #ffd700;
-    --td-button-primary-active-bg-color: #e8c800;
-    color: #ffffff;
-    border-radius: 10rpx;
-    padding: 10rpx 20rpx;
-    text-align: center;
-    margin-top: 20rpx;
-    align-self: center;
+    margin: 0rpx 10rpx 10rpx 10rpx;
   }
 
   .no-data {
@@ -67,4 +17,3 @@
     font-size: 32rpx;
     color: #888888;
   }
-  

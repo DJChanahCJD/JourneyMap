@@ -1,40 +1,122 @@
+<!-- pages/my/index.wxml -->
+<wxs module="_">
+  module.exports.contain = function(arr, key) {
+    return arr.indexOf(key) > -1
+  }
+</wxs>
 <view class="my-container">
   <top-bar></top-bar>
-    <!-- 顶部个人信息 -->
-  <view class="profile-header">
-    <image class="profile-avatar" src="/resources/default-avatar.png"></image>
-    <text class="profile-name">设置昵称</text>
-  </view>
-    <!--  -->
-    <!-- 数据统计 -->
-    <view class="statistics">
-      <view class="stat-item">
-        <text class="stat-number">{{cityCount}}</text>
-        <text class="stat-label">个城市</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-number">{{spotCount}}</text>
-        <text class="stat-label">个景点</text>
-      </view>
+  <view class="my-header">
+    <!-- 左侧个人信息 -->
+    <view class="profile-header" bind:tap="getUserProfile">
+      <image class="profile-avatar" src="{{avatarUrl}}"></image>
+      <text class="profile-name">{{nickName ? nickName : "设置昵称"}}</text>
     </view>
-
-    <!-- 心愿单 -->
-    <view class="wishlist">
-      <text class="wishlist-title">心愿单</text>
-      <block wx:for="{{wishlist}}" wx:key="id">
-        <view class="wishlist-item">
-          <image class="wishlist-image" src="{{item.image}}"></image>
-          <view class="wishlist-info">
-            <text class="wishlist-name">{{item.name}}</text>
-            <text class="wishlist-hours">
-                开放时间：{{item.hours}}</text>
-            <text class="wishlist-address">
-                地址：{{item.address}}</text>
-          </view>
+    <!-- 右侧数据统计 -->
+    <view class="statistics-header">
+      <view class="city-count count-item">
+        <view class="city-icon">
+          <image src="/resources/city.svg" class="stat-icon"></image>
         </view>
-      </block>
+        <text class="count-number">{{cityCount}}</text>
+        <text class="count-text">城市</text>
+      </view>
+      <view class="spot-count count-item">
+        <view class="spot-icon">
+          <image src="/resources/location-dot.svg" class="stat-icon"></image>
+        </view>
+        <text class="count-number">{{spotCount}}</text>
+        <text class="count-text">地点</text>
+      </view>
     </view>
+    <view class="recommendSpotBtn">
+      <button class="recommendSpotBtn-btn" bind:tap="handlePopup">
+        <image src="/resources/plus.svg" class="plus-icon"></image>
+        <text>推荐新地点</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 心愿单 -->
+  <view class="wishlist">
+    <text class="wishlist-title">心愿单</text>
+    <spot-card class="spot-item" wx:for="{{spots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" bind:favoriteupdate="handleFavoriteUpdate"/>
   </view>
 
   <!-- 底部导航栏 -->
   <nav-bar></nav-bar>
+
+  <!-- 优化后的弹出窗口 -->
+  <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
+    <view class="block">
+      <view class="header">
+        <view class="btn btn--cancel" bindtap="closeForm">×</view>
+        <view class="title">推荐表单</view>
+      </view>
+      <view class="form-container">
+        <!-- 地点名称 -->
+        <view class="form-item">
+          <t-input
+            label="地点名称"
+            placeholder="请输入地点名称"
+            data-field="treasureName"
+            bindinput="handleInput"
+            class="name-input-field"
+          />
+        </view>
+
+        <!-- 地址选择 -->
+        <view class="form-item">
+          <t-input label="具体地址" placeholder="请输入或选择地址" data-field="location" bindinput="handleInput" class="address-input-field">
+            {{location}}
+            <t-button slot="suffix" bindtap="chooseLocation" theme="primary" size="small" class="location-button">选择地址</t-button>
+          </t-input>
+        </view>
+
+        <!-- 地点类型选择器 -->
+        <view class="form-item">
+          <t-cell title="地点类型" arrow hover note="{{categoryText}}" bindtap="onCategoryPicker" />
+          <t-picker
+            visible="{{categoryVisible}}"
+            value="{{categoryValue}}"
+            data-key="category"
+            title="选择地点类型"
+            cancelBtn="取消"
+            confirmBtn="确认"
+            bindchange="onPickerChange"
+            bindpick="onColumnChange"
+            bindcancel="onPickerCancel"
+          >
+            <t-picker-item options="{{categories}}"></t-picker-item>
+          </t-picker>
+        </view>
+
+        <!-- 地点标签多选 -->
+        <view class="form-item">
+          <view class="form-title">地点标签</view>
+          <t-checkbox-group t-class="horizontal-box" value="{{tags}}" bind:change="onTagChange">
+            <view wx:for="{{tagsOptions}}" wx:key="index" class="card {{_.contain(tags, index) ? 'card--active' : ''}}">
+              <t-icon wx:if="{{_.contain(tags, index)}}" name="check" class="card__icon" ariaHidden="true" />
+              <t-checkbox value="{{index}}" label="{{item.label}}" icon="none" borderless />
+            </view>
+          </t-checkbox-group>
+        </view>
+
+        <!-- 推荐理由 -->
+        <view class="form-item">
+          <t-textarea
+            label="推荐理由"
+            placeholder="请输入推荐理由"
+            data-field="description"
+            bindinput="handleInput"
+            class="textarea-field"
+          />
+        </view>
+      </view>
+      <!-- 提交按钮 -->
+      <t-button bindtap="submitForm" size="large" theme="primary" class="submit-button">
+        提交
+      </t-button>
+    </view>
+  </t-popup>
+</view>
