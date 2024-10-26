@@ -22,6 +22,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-items: center;
   margin-bottom: 20rpx;
 }
 
@@ -174,7 +175,7 @@
 }
 
 .form-item {
-  margin-bottom: 12rpx; /* 减少垂直间距 */
+  margin-bottom: 20rpx; /* 减少垂直间距 */
 }
 
 .form-title {
@@ -207,9 +208,6 @@
 }
 
 .submit-button {
-  padding: 16rpx;
-  bottom: 10rpx;
-  transform: scale(1.05);
   align-self: center;
   justify-self: center;
   width: 90%;
@@ -223,7 +221,7 @@
 }
 
 .submit-button:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .card {

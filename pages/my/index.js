@@ -1,7 +1,7 @@
 // pages/my/index.js
 
-const mockData = require('../../data/mockData.js')
 const app = getApp();
+const { getSpots } = require('../../api/spot');
 
 Page({
     data: {
@@ -9,8 +9,9 @@ Page({
         spotCount: 123, // 用户收藏的景点数量
         avatarUrl: '/resources/default-avatar.png', // 默认头像
         nickName: null, // 用户昵称
-        favoriteSpotIds: [],
         spots: [],
+        favoriteSpotIds: [],
+        favoriteSpots: [],
         treasureName: '',
         category: '',
         categoryText: '',
@@ -33,13 +34,18 @@ Page({
         ],
         tags: [], // 存储选中的标签值，使用数字
         description: '',
-        location: ''
+        location: '',
+        fileList: [],
     },
 
-    onLoad() {
+
+    async onLoad() {
       console.log("onLoad!!");
-      this.fetchUserData(); // 加载用户信息和心愿单
-      this.getUserProfile(); // 获取用户微信头像
+      const spots = await getSpots(); // 等待获取到 spots 数据
+      this.setData({ spots }, () => {
+        // 在 setData 完成后再调用 fetchUserData
+        this.fetchUserData();
+      });
     },
 
     onShow() {
@@ -48,39 +54,85 @@ Page({
     },
 
     fetchUserData() {
+      const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
       this.setData({
-        favoriteSpotIds: app.globalData.favoriteSpotIds,
-        spots: mockData.scenicSpots.filter(spot => app.globalData.favoriteSpotIds.includes(spot.id))
+        favoriteSpotIds: favoriteSpotIds,
+        favoriteSpots: this.data.spots.filter(spot => favoriteSpotIds.includes(spot.id))
+      });
+      console.log("favoriteSpotIds: ", favoriteSpotIds);
+      console.log("spots: ", this.data.spots);
+      console.log("favoriteSpots: ", this.data.favoriteSpots);
+    },
+
+    handleAdd(e) {
+      console.log("handleAdd: ", e);
+      const { fileList } = this.data;
+      const { files } = e.detail;
+      this.setData({
+        fileList: [...fileList, ...files], // 此时设置了 fileList 之后才会展示选择的图片
       });
     },
+
+    onUpload(file) {
+      const { fileList } = this.data;
+
+      this.setData({
+        fileList: [...fileList, { ...file, status: 'loading' }],
+      });
+      const { length } = fileList;
+
+      const task = wx.uploadFile({
+        url: 'https://example.weixin.qq.com/upload', // 仅为示例，非真实的接口地址
+        filePath: file.url,
+        name: 'file',
+        formData: { user: 'test' },
+        success: () => {
+          this.setData({
+            [`fileList[${length}].status`]: 'done',
+          });
+        },
+      });
+      task.onProgressUpdate((res) => {
+        this.setData({
+          [`fileList[${length}].percent`]: res.progress,
+        });
+      });
+    },
+    handleRemove(e) {
+      const { index } = e.detail;
+      const { fileList } = this.data;
+
+      fileList.splice(index, 1);
+      this.setData({
+        fileList,
+      });
+    },
+
 
     handleFavoriteUpdate(e) {
       const { spotId, favoriteSpotIds } = e.detail;
       console.log("handleFavoriteUpdate: ", spotId, favoriteSpotIds);
 
-      // 更新 favoriteSpotIds 和 spots
-      const newSpots = mockData.scenicSpots.filter(spot => favoriteSpotIds.includes(spot.id));
+      // 更新 favoriteSpotIds 和 favoriteSpots
+      const newSpots = this.data.favoriteSpots.filter(spot => favoriteSpotIds.includes(spot.id));
 
       this.setData({
         favoriteSpotIds: favoriteSpotIds,
-        spots: newSpots,
+        favoriteSpots: newSpots,
       });
     },
 
-    getUserProfile() {
-      // 调用微信接口获取用户头像和昵称
-      wx.getUserProfile({
-        desc: '用于完善个人资料',
-        success: (res) => {
-          this.setData({
-            avatarUrl: res.userInfo.avatarUrl,
-            nickName: res.userInfo.nickName
-          });
-        },
-        fail: (err) => {
-          console.error('Error getting user profile:', err);
-        }
+    getUserProfile(){
+      wx.navigateTo({
+        url: '/pages/profile/index',
       });
+    },
+
+    onChooseAvatar(e) {
+      const { avatarUrl } = e.detail
+      this.setData({
+        avatarUrl,
+      })
     },
 
     onVisibleChange(e) {

@@ -1,5 +1,4 @@
-// api.js
-const baseUrl = "https://api.example.com";
+import { baseUrl } from './baseUrl';
 export function getSpotDetail(id) {
     return new Promise((resolve, reject) => {
         wx.request({
@@ -21,6 +20,7 @@ export function getFavoriteSpotIds(userId) {
             url: `${baseUrl}/user/${userId}/favorites`,
             method: 'GET',
             success: (res) => {
+                console.log("getFavoriteSpotIds res: ", res);
                 resolve(res.data || []);
             },
             fail: (err) => {
@@ -37,6 +37,7 @@ export function updateFavoriteSpotIds(userId, spotIds) {
             method: 'POST',
             data: { spotIds: spotIds },
             success: (res) => {
+                console.log("updateFavoriteSpotIds res: ", res);
                 resolve(res.data);
             },
             fail: (err) => {
@@ -46,32 +47,21 @@ export function updateFavoriteSpotIds(userId, spotIds) {
     });
 }
 
-export function getSpotList(province, city, type) {
+export function getSpots(province = '', city = '', type = '') {
+    // 构建查询参数字符串
+    let queryParams = [];
+    if (province) queryParams.push(`province=${province}`);
+    if (city) queryParams.push(`city=${city}`);
+    if (type) queryParams.push(`type=${type}`);
+    const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+
     return new Promise((resolve, reject) => {
         wx.request({
-            url: `${baseUrl}/spots?province=${province}&city=${city}&type=${type}`,
+            url: `${baseUrl}/spots${queryString}`,  // 根据是否有参数构建 URL
             method: 'GET',
             success: (res) => {
                 resolve(res.data);
-            },
-            fail: (err) => {
-                reject(err);
-            }
-        });
-    });
-}
-
-export function login(code) {
-    return new Promise((resolve, reject) => {
-        console.log("login!!!")
-        wx.request({
-            url: `${baseUrl}/login`,
-            method: 'POST',
-            data: { code: code },
-            dataType: 'json',
-            success: (res) => {
-                resolve(res.data);
-                console.log("res: ", res);
+                console.log("getSpots res: ", res.data);
             },
             fail: (err) => {
                 reject(err);

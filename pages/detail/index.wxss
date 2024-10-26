@@ -4,38 +4,23 @@
 	flex-direction: column;
 	align-items: center;
 	padding: 20rpx;
+	background: linear-gradient(to bottom, #e0f7fa, #e8f5e9);
+	width: 100%;
+	box-sizing: border-box;
   }
 
-  /* 店铺轮播图样式 */
+  /* 轮播图样式 */
   .main-image {
 	width: 100%;
 	height: 400rpx;
-	margin-bottom: 80rpx;
-  }
-
-  /* 图片列表样式 */
-  .image-list-container {
-	width: 100%;
-	white-space: nowrap;
 	margin-bottom: 20rpx;
   }
 
-  .image-list {
-	display: inline-block;
-	}
-
-  .list-image {
-	display: inline-block;
-	width: 160rpx;
-	height: 160rpx;
-	margin-right: 20rpx;
-	border-radius: 8rpx;
-	box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.2);
-  }
-
-  /* 可以添加一个激活状态的样式 */
-  .list-image.active {
-	border: 2rpx solid #199cad;
+  .swiper-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 10rpx;
   }
 
   /* 信息卡片样式 */
@@ -46,12 +31,77 @@
 	border-radius: 10rpx;
 	box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.1);
 	margin-bottom: 20rpx;
+	box-sizing: border-box;
   }
 
-  .shop-name {
+  .info-header {
+	display: flex;
+	flex-direction: column;
+  }
+
+  .spot-name-container {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+  }
+
+  .spot-name {
 	font-size: 36rpx;
 	font-weight: bold;
-	margin-bottom: 10rpx;
+	color: #00796b;
+	margin-right: 10rpx;
+  }
+
+  .tag-container {
+	margin-left: 10rpx;
+  }
+
+  .tag {
+	background-color: #ffeb3b;
+	color: #555;
+	padding: 4rpx 8rpx;
+	border-radius: 4rpx;
+	font-size: 24rpx;
+  }
+
+  .collect-icon {
+	width: 32rpx;
+	height: 32rpx;
+	padding: 4rpx;
+	margin-left: auto;
+  }
+
+  .collect-icon-img {
+	width: 100%;
+	height: 100%;
+  }
+
+  .address-container {
+	margin-top: 10rpx;
+  }
+
+  .address-text {
+	display: flex;
+	align-items: center;
+	font-size: 32rpx;
+	color: #555;
+	flex-wrap: wrap;
+  }
+
+  .nav-button {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+	padding: 10rpx 20rpx;
+	background-color: #FFD700;
+	color: #ffffff;
+	border-radius: 5rpx;
+  }
+
+  .nav-button .icon-button {
+	width: 24rpx;
+	height: 24rpx;
+	margin-right: 5rpx;
   }
 
   .info-item {
@@ -60,32 +110,256 @@
 	margin-bottom: 10rpx;
   }
 
-  .nav-button {
-	margin-left: 20rpx;
-	padding: 10rpx 20rpx;
-	background-color: #1aad19;
-	color: #ffffff;
-	border-radius: 5rpx;
+  .icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
   }
 
   /* 详细介绍部分样式 */
   .description-section {
 	width: 100%;
 	background-color: #f0f0f0;
-	background-size: cover;
 	padding: 30rpx;
 	border-radius: 10rpx;
-	color: #000000;
-	text-align: center;
+	margin-bottom: 20rpx;
+	box-sizing: border-box;
   }
 
-  .description-title {
+  .description-title,
+  .comments-title {
 	font-size: 32rpx;
 	font-weight: bold;
-	text-decoration: underline;
+	color: #00796b;
 	margin-bottom: 10rpx;
   }
 
+  .description-title {
+	text-decoration: underline;
+  }
+
   .description-content {
+	font-size: 28rpx;
+	color: #424242;
+	word-wrap: break-word;
+  }
+
+  /* 评论区域样式 */
+  .comments-section {
+	width: 100%;
+	background-color: #ffffff;
+	padding: 20rpx;
+	border-radius: 10rpx;
+	box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.1);
+	margin-bottom: 20rpx;
+	box-sizing: border-box;
+  }
+
+  .comments-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+  }
+
+  .comments-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #00796b;
+	/* 已移除底部边框，因为添加了排序选择器 */
+  }
+
+  .sort-toggle {
+	display: flex;
+	align-items: center;
+	font-size: 28rpx;
+	color: #707070;
+	padding: 5rpx 10rpx;
+	cursor: pointer;
+	
+  }
+
+  .sort-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 5rpx;
+  }
+
+  .comment-item {
+	border-bottom: 1rpx solid #e0e0e0;
+	padding: 15rpx 0;
+	box-sizing: border-box;
+  }
+
+  .comment-header {
+	display: flex;
+	align-items: center;
+  }
+
+  .avatar {
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	margin-right: 10rpx;
+	flex-shrink: 0;
+  }
+
+  .comment-info {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+  }
+
+  .author {
+	font-weight: bold;
+	color: #424242;
+	font-size: 28rpx;
+  }
+
+  .comment-time-rating {
+	display: flex;
+	align-items: center;
+	margin-top: 4rpx;
+  }
+
+  .comment-time {
+	font-size: 24rpx;
+	color: #999;
+	margin-left: 10rpx;
+  }
+
+  .rating {
+	display: flex;
+  }
+
+  .comment-content {
+	font-size: 28rpx;
+	color: #424242;
+	margin: 10rpx 0;
+	word-wrap: break-word;
+  }
+
+  .comment-actions {
+	display: flex;
+	align-items: center;
+  }
+
+  .upvote-button,
+  .reply-button {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	margin-right: 20rpx;
+	transition: color 0.3s;
+  }
+
+  .upvote-button.upvoted {
+	color: #FFD700;
+  }
+
+  .upvote-icon,
+  .reply-icon {
+	width: 24rpx;
+	height: 24rpx;
+	margin-right: 5rpx;
+  }
+
+  .upvote-count,
+  .reply-text {
+	font-size: 24rpx;
+	color: #00796b;
+  }
+
+  .upvote-button:hover,
+  .reply-button:hover {
+	color: #1aad19;
+  }
+
+  /* 回复列表 */
+  .replies-list {
+	margin-left: 20rpx; /* 增加缩进 */
+	margin-top: 10rpx;
+	padding-left: 20rpx;
+	border-left: 2rpx solid #e0e0e0; /* 添加左边框以区分 */
+  }
+
+  /* 回复项 */
+  .reply-item {
+	display: flex;
+	align-items: flex-start;
+	margin-bottom: 10rpx;
+	background-color: #f9f9f9;
+	padding: 10rpx;
+	border-radius: 5rpx;
+  }
+
+  /* 回复信息 */
+  .reply-info {
+	display: flex;
+	flex-direction: column;
+  }
+
+  .reply-time {
+	font-size: 22rpx;
+	color: #999;
+	margin-top: 4rpx;
+  }
+
+  /* 回复输入框 */
+  .reply-input {
+	display: flex;
+	align-items: center;
+	margin-top: 10rpx;
+	margin-left: 60rpx; /* 与 replies-list 缩进一致 */
+  }
+
+  .reply-text-input {
+	flex: 1;
+	border: 1rpx solid #e0e0e0;
+	border-radius: 5rpx;
+	padding: 8rpx 10rpx;
+	font-size: 24rpx;
+	margin-right: 10rpx;
+	box-sizing: border-box;
+  }
+
+  .submit-reply-button {
+	background-color: #1aad19;
+	color: #ffffff;
+	border: none;
+	border-radius: 5rpx;
+	padding: 8rpx 16rpx;
+	font-size: 24rpx;
+	transition: background-color 0.3s;
+  }
+
+  .submit-reply-button:hover {
+	background-color: #179b16;
+  }
+
+  /* 添加评论样式 */
+  .add-comment {
+	margin: 20rpx 0;
+  }
+
+  .comment-input {
+	width: 100%;
+	border: 1rpx solid #e0e0e0;
+	border-radius: 5rpx;
+	height: 100rpx;
+	margin-bottom: 10rpx;
+	font-size: 28rpx;
+	padding: 10rpx;
+	box-sizing: border-box;
+  }
+
+  .comment-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+  }
+
+  .t-button {
+	padding: 6rpx 20rpx;
 	font-size: 28rpx;
   }

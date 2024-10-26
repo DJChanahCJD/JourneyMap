@@ -3,6 +3,11 @@
     "t-popup": "/miniprogram_npm/tdesign-miniprogram/popup/popup",
     "spot-card": "/components/spot-card/spot-card"
   },
-  "navigationStyle": "custom"
-
+  "navigationStyle": "custom",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于显示地图上的位置和附近景点"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"]
 }

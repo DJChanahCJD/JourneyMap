@@ -9,8 +9,10 @@
   <view class="my-header">
     <!-- 左侧个人信息 -->
     <view class="profile-header" bind:tap="getUserProfile">
-      <image class="profile-avatar" src="{{avatarUrl}}"></image>
-      <text class="profile-name">{{nickName ? nickName : "设置昵称"}}</text>
+      <button open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="profile-avatar" src="{{avatarUrl}}"></image>
+      </button>
+      <input type="nickname" class="profile-name" placeholder="设置昵称">{{nickName ? nickName : "设置昵称"}}</input>
     </view>
     <!-- 右侧数据统计 -->
     <view class="statistics-header">
@@ -40,7 +42,7 @@
   <!-- 心愿单 -->
   <view class="wishlist">
     <text class="wishlist-title">心愿单</text>
-    <spot-card class="spot-item" wx:for="{{spots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" bind:favoriteupdate="handleFavoriteUpdate"/>
+    <spot-card class="spot-item" wx:for="{{favoriteSpots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" bind:favoriteupdate="handleFavoriteUpdate"/>
   </view>
 
   <!-- 底部导航栏 -->
@@ -48,7 +50,7 @@
 
   <!-- 优化后的弹出窗口 -->
   <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
-    <view class="block">
+    <scroll-view scroll-y="true" class="block">
       <view class="header">
         <view class="btn btn--cancel" bindtap="closeForm">×</view>
         <view class="title">推荐表单</view>
@@ -102,21 +104,35 @@
           </t-checkbox-group>
         </view>
 
+        <view class="form-item">
+          <view class="form-title">上传图片（可选）</view>
+          <t-upload
+            mediaType="{{['image']}}"
+            max="{{3}}"
+            files="{{fileList}}"
+            bind:add="handleAdd"
+            bind:remove="handleRemove"
+            bing:tap="onUpload"
+          >
+          </t-upload>
+        </view>
+
+
         <!-- 推荐理由 -->
         <view class="form-item">
+          <view class="form-title">推荐理由</view>
           <t-textarea
-            label="推荐理由"
             placeholder="请输入推荐理由"
             data-field="description"
             bindinput="handleInput"
             class="textarea-field"
           />
         </view>
+        <!-- 提交按钮 -->
+        <t-button bindtap="submitForm" size="medium" theme="primary" class="submit-button">
+          提交
+        </t-button>
       </view>
-      <!-- 提交按钮 -->
-      <t-button bindtap="submitForm" size="large" theme="primary" class="submit-button">
-        提交
-      </t-button>
-    </view>
+    </scroll-view>
   </t-popup>
 </view>

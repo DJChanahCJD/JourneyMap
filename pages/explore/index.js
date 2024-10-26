@@ -1,5 +1,5 @@
-const mockData = require('../../data/mockData.js');
-
+const { getSpots } = require('../../api/spot');
+const app = getApp();
 Page({
     data: {
         province: {
@@ -25,17 +25,21 @@ Page({
         isPickerDisabled: false, // 是否禁用下拉选择栏
     },
 
-    onLoad() {
-        const favoriteSpotIds = wx.getStorageSync('favoriteSpotIds') || [];
-        console.log("explore: ", wx.getStorageSync('favoriteSpotIds'));
-        this.setData({ favoriteSpotIds });
+    async onLoad() {
+        const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
+        const spots = await getSpots();
+        console.log("explore: ", app.globalData.favoriteSpotIds);
+        this.setData({
+            favoriteSpotIds: favoriteSpotIds,
+            spots: spots
+         });
         // 生成初始的筛选项
         this.generateFilterOptions();
         this.fetchSpotData(); // 初始加载景点数据
     },
 
     onShow() {
-        this.setData({ favoriteSpotIds: wx.getStorageSync('favoriteSpotIds') || [] });
+        this.setData({ favoriteSpotIds: app.globalData.favoriteSpotIds || [] });
         this.fetchSpotData();
     },
 
@@ -47,7 +51,7 @@ Page({
         const types = new Set();
 
         // 遍历数据生成唯一的省份和类型
-        mockData.scenicSpots.forEach(spot => {
+        this.data.spots.forEach(spot => {
             provinces.add(spot.province);
             types.add(spot.type);
         });
@@ -111,7 +115,7 @@ Page({
         const cities = new Set();
 
         // 根据所选省份生成城市选项
-        mockData.scenicSpots.forEach(spot => {
+        this.data.spots.forEach(spot => {
             if (selectedProvince === '全部省份' || spot.province === selectedProvince) {
                 cities.add(spot.city);
             }
@@ -188,7 +192,7 @@ Page({
      * 获取景点数据，可以选择使用模拟数据或通过API获取
      */
     fetchSpotData() {
-        let filteredSpots = mockData.scenicSpots;
+        let filteredSpots = this.data.spots;
 
         // 根据选择的省份进行筛选
         const selectedProvince = this.data.province.options[this.data.province.value].label;

@@ -3,7 +3,8 @@
     "pages/map/index",
     "pages/explore/index",
     "pages/my/index",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/profile/index"
   ],
   "subPackages": [
     {

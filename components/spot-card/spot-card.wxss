@@ -9,7 +9,7 @@
 	border: 1rpx solid #e0e0e0;
 	background-color: #fff;
 	margin: 6rpx 12rpx;
-	z-index: 1000;
+	z-index: 1001;
   }
 
 

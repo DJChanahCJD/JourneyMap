@@ -1,50 +1,164 @@
 <view class="container">
-
-  <t-swiper
+  <!-- 轮播图 -->
+  <swiper
     class="main-image"
     current="{{currentImageIndex}}"
-    autoplay="{{autoplay}}"
-    navigation="{{navigation}}"
-    paginationPosition="{{paginationPosition}}"
-    list="{{spot.images}}"
-  ></t-swiper>
+    autoplay="{{false}}"
+    indicator-dots="{{true}}"
+    indicator-color="#fff"
+    indicator-active-color="#FFD700"
+    circular="{{true}}"
+    bindchange="onSwiperChange"
+  >
+    <block wx:for="{{spot.images}}" wx:key="index">
+      <swiper-item>
+        <image src="{{item}}" class="swiper-image"></image>
+      </swiper-item>
+    </block>
+  </swiper>
 
-  <!-- 图片列表 -->
-  <scroll-view scroll-x="true" class="image-list-container">
-    <view class="image-list">
-      <block wx:for="{{spot.images}}" wx:key="index">
-        <image
-          src="{{item}}"
-          class="list-image {{index === currentImageIndex ? 'active' : ''}}"
-          bindtap="onImageClick"
-          data-index="{{index}}"
-        ></image>
-      </block>
-    </view>
-  </scroll-view>
-
-  <!-- 介绍卡片 -->
+  <!-- 信息卡片 -->
   <view class="info-card">
-    <view class="shop-name">{{spot.name}}</view>
-    <view class="info-item">
-      <text>地址: {{spot.address}}</text>
-      <button class="nav-button" bindtap="onNavigate">导航</button>
+    <view class="info-header">
+      <view class="spot-name-container">
+        <view class="spot-name">{{spot.name}}</view>
+        <view class="tag-container">
+          <view class="tag">小众</view>
+        </view>
+        <view class="collect-icon" catchtap="toggleCollect" data-id="{{spot.id}}">
+          <image
+            class="collect-icon-img"
+            src="{{collected ? '/resources/filled-star.svg' : '/resources/empty-star.svg'}}"
+            mode="scaleToFill"
+          />
+        </view>
+      </view>
+      <view class="address-container">
+        <view class="address-text">
+          <text>{{spot.address}}</text>
+          <button class="nav-button" bindtap="onNavigate">
+            <image src="/resources/navigate.svg" class="icon-button"></image>
+          </button>
+        </view>
+        <view class="address-map">
+          <map
+            id="map"
+            class="map"
+            show-location
+            longitude="{{spot.longitude}}"
+            latitude="{{spot.latitude}}"
+            scale="12"
+            style="width: 100%; height: 150rpx;"
+          ></map>
+        </view>
+      </view>
     </view>
     <view class="info-item">
+      <image src="/resources/clock.png" class="icon"></image>
       <text>开放时间: {{spot.hours}}</text>
     </view>
     <view class="info-item">
-      <text>联系电话: {{spot.contact}}</text>
+      <image src="/resources/phone.png" class="icon"></image>
+      <text>联系方式: {{spot.contact}}</text>
+    </view>
+    <view class="info-item">
+      <image src="/resources/official-account.png" class="icon"></image>
+      <text>公众号</text>
     </view>
   </view>
 
   <!-- 详细介绍 -->
   <view class="description-section">
-    <view class="description-title">
-      <text>店铺推荐</text>
-    </view>
+    <view class="description-title">About</view>
     <view class="description-content">
       <text>{{spot.description}}</text>
+    </view>
+  </view>
+
+  <!-- 评论区域 -->
+  <view class="comments-section">
+    <view class="comments-header">
+      <view class="comments-title">评论</view>
+      <!-- 排序选择器 -->
+      <view class="sort-toggle" bindtap="toggleSort">
+          <image src="/resources/sort-icon.svg" class="sort-icon"></image>
+          <text class="sort-text">{{currentSort}}</text>
+      </view>
+    </view>
+
+    <block wx:for="{{spot.comments}}" wx:key="id">
+      <view class="comment-item">
+        <view class="comment-header">
+          <image src="{{item.avatar || '/resources/default-avatar.png'}}" class="avatar"></image>
+          <view class="comment-info">
+            <text class="author">{{item.author}}</text>
+            <view class="comment-time-rating">
+              <t-rate class="rating" value="{{item.rating}}" size="12px" disabled />
+              <text class="comment-time">{{item.formattedTime}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="comment-content">{{item.content}}</view>
+        <view class="comment-actions">
+          <view
+            class="upvote-button {{item.isUpvoted ? 'upvoted' : ''}}"
+            bindtap="onUpvote"
+            data-id="{{item.id}}"
+          >
+            <image
+              class="upvote-icon"
+              src="{{item.isUpvoted ? '/resources/upvote-filled.svg' : '/resources/upvote.svg'}}"
+            />
+            <text class="upvote-count">{{item.upvotes || 0}}</text>
+          </view>
+          <view class="reply-button" data-id="{{item.id}}" bindtap="onReply">
+            <image class="reply-icon" src="/resources/reply.svg" />
+            <text class="reply-text">回复</text>
+          </view>
+        </view>
+        <!-- 回复列表 -->
+        <block wx:if="{{item.replies.length > 0}}">
+          <view class="replies-list">
+            <block wx:for="{{item.replies}}" wx:key="index" wx:for-item="reply">
+              <view class="reply-item">
+                <view class="reply-info">
+                  <view>
+                    <image src="{{reply.avatar || '/resources/default-avatar.png'}}" class="avatar"></image>
+                    <text class="author">{{reply.author || '匿名用户'}}</text>
+                  </view>
+                  <text class="comment-content">{{reply.content || '回复内容'}}</text>
+                  <text class="comment-time">{{reply.formattedTime || '时间'}}</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+        <!-- 回复输入框 -->
+        <block wx:if="{{replyingTo === item.id}}">
+          <view class="reply-input">
+            <input
+              placeholder="输入你的回复..."
+              bindinput="onReplyInput"
+              value="{{newReply}}"
+              class="reply-text-input"
+            />
+            <button bindtap="submitReply" class="submit-reply-button">提交</button>
+          </view>
+        </block>
+      </view>
+    </block>
+    <!-- 添加评论 -->
+    <view class="add-comment">
+      <input
+        placeholder="写下你的评论..."
+        bindinput="onCommentInput"
+        value="{{newComment.content}}"
+        class="comment-input"
+      />
+      <view class="comment-actions">
+        <t-rate value="{{newComment.rating}}" bind:change="onRateChange" />
+        <t-button theme="primary" bindtap="submitComment">发布</t-button>
+      </view>
     </view>
   </view>
 </view>

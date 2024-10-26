@@ -1,8 +1,8 @@
-const mockData = require('../../data/mockData.js');
 import cloudbase from "@cloudbase/js-sdk/app";
 import { registerAuth } from "@cloudbase/js-sdk/auth";
 import { registerAi } from "@cloudbase/js-sdk/ai";
-import AMap from '../../uitls/amap-wx.js';
+import AMap from '../../api/amap-wx.js';
+import { getSpots } from '../../api/spot';
 
 const app = getApp();
 Page({
@@ -28,20 +28,21 @@ Page({
     markers: [], // 标记点数组
     selectedType: '分类', // 新增数据，保存当前选择的景点类型
     typeList: ['全部', '文化', '自然', '历史', '艺术', '科技', '娱乐'], // 景点类型列表
-    scenicSpots: mockData.scenicSpots, // 景点数据
     selectedSpot: null, // 保存当前选中的景点
     isShow: true,
     messages: [],
     inputContent: '',
+    spots: [],
     favoriteSpotIds: [],
     amapKey: '96e3eef9050ea0c7d8e12ab8c541f395', // 高德地图API Key
   },
 
-  onLoad: function () {
+  async onLoad() {
+    const spots = await getSpots();
     this.setData({
       favoriteSpotIds: app.globalData.favoriteSpotIds,
+      spots: spots
     });
-
     // 初始化高德地图实例
     this.amapInstance = new AMap.AMapWX({key: this.data.amapKey});
 
@@ -56,7 +57,7 @@ Page({
     });
     console.log("selectedSpot: ", this.data.selectedSpot);
     if (this.data.selectedSpot) {
-      this.data.selectedSpot.isCollected = app.globalData.favoriteSpotIds.includes(this.data.selectedSpot.id);
+      this.data.selectedSpot.isCollected = this.data.favoriteSpotIds.includes(this.data.selectedSpot.id);
       console.log("selectedSpot: ", this.data.selectedSpot);
     }
     this.setData({ isShow: true });
@@ -75,39 +76,39 @@ Page({
 
           console.log("latitude: ", this.data.latitude);
           console.log("longitude: ", this.data.longitude);
-          // 设置景点标记
-          this.setSpots(this.data.scenicSpots, { latitude: res[0].latitude, longitude: res[0].longitude });
-          // 寻找最近的景点并选中
-          this.findNearestSpot({ latitude: res[0].latitude, longitude: res[0].longitude });
         }
       },
       fail: (err) => {
         console.log("获取位置失败: ", err);
       }
     });
+    this.setSpots(this.data.spots, { latitude: this.data.latitude, longitude: this.data.longitude });
+    this.findNearestSpot({ latitude: this.data.latitude, longitude: this.data.longitude });
   },
 
   setSpots(spots, userLocation) {
+    console.log("favoriteSpotIds: ", this.data.favoriteSpotIds);
+    console.log("spots: ", spots);
     const markers = spots.map(spot => ({
       id: spot.id,
       latitude: spot.latitude,
       longitude: spot.longitude,
       title: spot.name,
-      iconPath: spot.isCollected ? this.data.collectedIconPath : this.data.iconPath,
+      iconPath: this.data.favoriteSpotIds.includes(spot.id) ? this.data.collectedIconPath : this.data.iconPath,
       width: this.data.iconWidth,
       height: this.data.iconHeight
     }));
-    console.log("markers: ", markers);
     this.setData({ markers: markers });
+    console.log("setSpots markers: ", markers);
   },
 
   findNearestSpot: function (userLocation) {
     // 找到最近的景点
-    const scenicSpots = this.data.scenicSpots;
+    const spots = this.data.spots;
     let nearestSpot = null;
     let minDistance = Number.MAX_VALUE;
 
-    scenicSpots.forEach(spot => {
+    spots.forEach(spot => {
       const distance = this.calculateDistance(userLocation, spot);
       if (distance < minDistance) {
         minDistance = distance;
@@ -118,7 +119,18 @@ Page({
       // 设置最近景点为选中状态
       this.setData({
         markers: this.data.markers.map(marker => {
-          marker.iconPath = marker.id === nearestSpot.id ? this.data.selectedIconPath : this.data.iconPath;
+          if (marker.id === nearestSpot.id) {
+            marker.width = this.data.iconWidth * 1.2;
+            marker.height = this.data.iconHeight * 1.2;
+            marker.iconPath = this.data.selectedIconPath;
+          } else {
+            marker.width = this.data.iconWidth;
+            marker.height = this.data.iconHeight;
+            marker.iconPath = this.data.iconPath;
+          }
+          if (this.data.favoriteSpotIds.includes(marker.id)) {
+            marker.iconPath = this.data.collectedIconPath;
+          }
           return marker;
         }),
         selectedSpot: nearestSpot
@@ -157,7 +169,7 @@ Page({
 
   // 更新地图标记
   updateMarkers: function () {
-    const filteredSpots = this.data.scenicSpots.filter(spot => {
+    const filteredSpots = this.data.spots.filter(spot => {
       return this.data.selectedType === '全部' || spot.type === this.data.selectedType;
     });
 
@@ -168,11 +180,22 @@ Page({
   onMarkerTap: function (e) {
     if (e.markerId === this.data.selectedMarkerId) return;
     const markerId = e.markerId;
-    const selectedSpot = this.data.scenicSpots.find(spot => spot.id === markerId);
+    const selectedSpot = this.data.spots.find(spot => spot.id === markerId);
     if (selectedSpot) {
       this.setData({
         markers: this.data.markers.map(marker => {
-          marker.iconPath = marker.id === markerId ? this.data.selectedIconPath : this.data.iconPath;
+          if (marker.id === markerId) {
+            marker.width = this.data.iconWidth * 1.2;
+            marker.height = this.data.iconHeight * 1.2;
+            marker.iconPath = this.data.selectedIconPath;
+          } else {
+            marker.width = this.data.iconWidth;
+            marker.height = this.data.iconHeight;
+            marker.iconPath = this.data.iconPath;
+          }
+          if (this.data.favoriteSpotIds.includes(marker.id)) {
+            marker.iconPath = this.data.collectedIconPath;
+          }
           return marker;
         }),
         selectedSpot: selectedSpot
