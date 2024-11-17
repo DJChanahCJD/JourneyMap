@@ -63,7 +63,10 @@
     </view>
     <view class="info-item">
       <image src="/resources/official-account.png" class="icon"></image>
-      <text>官方链接: {{spot.links || '官方链接'}}</text>
+      <view class="link-container">
+        <text class="link-text">官方链接:</text>
+        <text class="link-content">{{spot.links || '待添加'}}</text>
+      </view>
     </view>
   </view>
 

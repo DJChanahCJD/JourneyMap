@@ -37,44 +37,56 @@ Page({
 
 
     async onLoad() {
-      console.log("onLoad!!");
-      const spots = (await getSpots()); // 等待获取到 spots 数据
-      this.setData({ spots }, () => {
-        // 在 setData 完成后再调用 fetchUserData
+      const spots = await getSpots();
+      // 确保 spots 中的 id 都是数字类型
+      const formattedSpots = spots.map(spot => ({
+        ...spot,
+        id: parseInt(spot.id, 10)
+      }));
+
+      this.setData({
+        spots: formattedSpots
+      }, () => {
         this.fetchUserData();
       });
-      this.setData({ userInfo: app.globalData.userInfo,
+
+      this.setData({
+        userInfo: app.globalData.userInfo,
         spotCount: spots.length,
-        cityCount: spots.map(spot => spot.province).filter((value, index, self) => self.indexOf(value) === index).length,
-       });
-       console.log("app.globalData.tags: ", app.globalData.tags);
-       console.log("app.globalData.categories: ", app.globalData.categories);
-       this.setData({
-         tags: app.globalData.tags,
-         categories: app.globalData.categories.map(category => ({
-           label: category,
-           value: category
-         }))
-       });
-       console.log("tags: ", this.data.tags);
-       console.log("categories: ", this.data.categories);
+        cityCount: spots.map(spot => spot.province)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .length,
+        tags: app.globalData.tags,
+        categories: app.globalData.categories.map(category => ({
+          label: category,
+          value: category
+        }))
+      });
     },
 
     onShow() {
-      console.log("onShow!!");
       this.fetchUserData();
     },
 
     fetchUserData() {
       const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
+      console.log("favoriteSpotIds from my page: ", favoriteSpotIds);
+
+      // 确保 favoriteSpotIds 中的 id 都是数字类型
+      const numericFavoriteIds = favoriteSpotIds.map(id => parseInt(id, 10));
+
+      // 过滤收藏的景点
+      const favoriteSpots = this.data.spots.filter(spot =>
+        numericFavoriteIds.includes(parseInt(spot.id, 10))
+      );
+
+      console.log("Filtered favoriteSpots:", favoriteSpots);
+
       this.setData({
         userInfo: app.globalData.userInfo,
-        favoriteSpotIds: favoriteSpotIds,
-        favoriteSpots: this.data.spots.filter(spot => favoriteSpotIds.includes(spot.id))
+        favoriteSpotIds: numericFavoriteIds,
+        favoriteSpots: favoriteSpots
       });
-      console.log("favoriteSpotIds: ", favoriteSpotIds);
-      console.log("spots: ", this.data.spots);
-      console.log("favoriteSpots: ", this.data.favoriteSpots);
     },
 
     handleAdd(e) {
@@ -176,8 +188,6 @@ Page({
     onPickerChange(e) {
       const { key } = e.currentTarget.dataset;
       const { value } = e.detail;
-      console.log('picker change:', key, value);
-      console.log('categories:', this.data.categories);
       this.setData({
         categoryVisible: false,
         categoryValue: value,
@@ -246,7 +256,6 @@ Page({
     this.setData({
       selectedTags
     });
-    console.log('selectedTags:', this.data.selectedTags);
   },
 
     // 表单提交
@@ -281,7 +290,6 @@ Page({
         selectedTags.forEach(tag => {
           formData.append('tags', tag);
         });
-        console.log('formData.getData().tags:', formData.getData().tags); // undefined
         // 处理多张图片
         for (let i = 0; i < fileList.length; i++) {
           formData.appendFile('file', fileList[i].url, `image_${i}.jpg`);
@@ -292,8 +300,7 @@ Page({
 
 
         // 发送请求 - 确保 baseUrl 是字符串
-        console.log('Request URL:', `${baseUrl}/audit/postAuditItem`); // 调试用
-        console.log('Request Data:', formData.getData()); // 调试用
+        console.log('Submit Request Data from my page:', formData.getData()); // 调试用
         wx.request({
           url: `${baseUrl}/audit/postAuditItem`,
           method: 'POST',

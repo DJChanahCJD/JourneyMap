@@ -34,7 +34,7 @@ Page({
     inputContent: '',
     spots: [],
     favoriteSpotIds: [],
-    amapKey: '96e3eef9050ea0c7d8e12ab8c541f395', // 高德地图API Key
+    amapKey: app.globalData.amapKey,
   },
 
   async onLoad() {
@@ -72,10 +72,7 @@ Page({
     });
 
     this.data.spots.forEach(spot => {
-      console.log("spot id: ", spot.id, typeof spot.id);
       spot.id = parseInt(spot.id, 10);
-      console.log("spot id: ", spot.id, typeof spot.id);
-
     });
 
     app.globalData.favoriteSpotIds = this.data.favoriteSpotIds;
@@ -86,30 +83,47 @@ Page({
   },
 
   onShow() {
+    // 获取最新的收藏列表
+    const favoriteSpotIds = app.globalData.favoriteSpotIds;
+
+    // 比较新旧收藏列表，找出变化的部分
+    const oldFavorites = new Set(this.data.favoriteSpotIds);
+    const newFavorites = new Set(favoriteSpotIds);
+
+    // 获取需要更新的 markerId
+    const changedMarkerIds = [...oldFavorites, ...newFavorites].filter(id =>
+      oldFavorites.has(id) !== newFavorites.has(id)
+    );
+
+    if (changedMarkerIds.length === 0) {
+      return;
+    }
+    
     this.setData({
-      favoriteSpotIds: app.globalData.favoriteSpotIds,
-      isShow: false,
+      isShow: false
     });
-    console.log("onShow selectedSpot wx.getStorageSync: ", this.data.selectedSpot);
-    console.log("selectedSpot: ", this.data.selectedSpot);
-    console.log("favoriteSpotIds: ", this.data.favoriteSpotIds);
+    // 只更新发生变化的 markers
+    const markerUpdates = {};
+    changedMarkerIds.forEach(markerId => {
+      const markerIndex = this.data.markers.findIndex(m => m.id === markerId);
+      if (markerIndex !== -1) {
+        const isSelected = this.data.selectedSpot && markerId === this.data.selectedSpot.id;
+        markerUpdates[`markers[${markerIndex}]`] = {
+          ...this.data.markers[markerIndex],
+          width: isSelected ? this.data.iconWidth * 1.2 : this.data.iconWidth,
+          height: isSelected ? this.data.iconHeight * 1.2 : this.data.iconHeight,
+          iconPath: newFavorites.has(markerId)
+            ? this.data.collectedIconPath
+            : (isSelected ? this.data.selectedIconPath : this.data.iconPath)
+        };
+      }
+    });
+
+    // 一次性更新所有变化的 markers
     this.setData({
       isShow: true,
-      markers: this.data.markers.map(marker => {
-        if (marker.id === this.data.selectedSpot.id) {
-          marker.width = this.data.iconWidth * 1.2;
-          marker.height = this.data.iconHeight * 1.2;
-          marker.iconPath = this.data.selectedIconPath;
-        } else {
-          marker.width = this.data.iconWidth;
-          marker.height = this.data.iconHeight;
-          marker.iconPath = this.data.iconPath;
-        }
-        if (this.data.favoriteSpotIds.includes(marker.id)) {
-          marker.iconPath = this.data.collectedIconPath;
-        }
-        return marker;
-      }),
+      favoriteSpotIds,
+      ...markerUpdates
     });
   },
 
@@ -122,7 +136,6 @@ Page({
 
     // 找到需要更新的marker的索引
     const markerIndex = this.data.markers.findIndex(marker => marker.id === spotId);
-    console.log("updateMarkerIndex: ", markerIndex);
     // 如果找到对应的marker，只更新这一个marker的图标
     if (markerIndex !== -1) {
         this.setData({
@@ -144,27 +157,36 @@ Page({
 
     this.setData({ spots: formattedSpots });
 
+    // 先设置所有标记点，但不计算最近点
+    this.setSpots(formattedSpots);
+
+    // 获取位置
     this.amapInstance.getRegeo({
       success: (res) => {
-        console.log("res: ", res);
+        console.log("获取用户位置 this.amapInstance.getRegeo success: ", res);
         if (res && res.length > 0) {
-          that.setData({
+          const location = {
             latitude: res[0].latitude,
             longitude: res[0].longitude
+          };
+
+          // 更新位置信息
+          that.setData({
+            latitude: location.latitude,
+            longitude: location.longitude
           });
+
+          // 更新全局位置
+          app.updateLocation(location.latitude, location.longitude);
+
+          // 获取到实际位置后再计算最近的景点
+          this.findNearestSpot(location);
         }
       },
       fail: (err) => {
         console.log("获取位置失败: ", err);
-        // 即使获取位置失败，也要显示景点标记
-        this.setSpots(formattedSpots);
+        // 位置获取失败时不计算最近点，保持默认显示
       }
-    });
-    // 保证在获取失败也能使用默认位置
-    this.setSpots(formattedSpots);
-    this.findNearestSpot({
-      latitude: this.data.latitude,
-      longitude: this.data.longitude
     });
   },
 
@@ -182,7 +204,6 @@ Page({
         width: this.data.iconWidth,
         height: this.data.iconHeight
       };
-      console.log("创建marker:", marker);
       return marker;
     });
 
@@ -270,11 +291,8 @@ Page({
   // 点击标记
   onMarkerTap: function (e) {
     if (e.markerId === this.data.selectedMarkerId) return;
-    console.log("e: ", e);
     const markerId = e.markerId;
     const selectedSpot = this.data.spots.find(spot => spot.id === markerId);
-    console.log("spotid: ", this.data.spots[0].id, typeof this.data.spots[0].id);
-    console.log("markerid: ", markerId, typeof markerId);
     console.log("onMarkerTap selectedSpot: ", selectedSpot);
     if (selectedSpot) {
       this.setData({

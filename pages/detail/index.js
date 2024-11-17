@@ -52,19 +52,25 @@ Page({
 
   onLoad: async function (options) {
     try {
-      // 显示加载提示
       wx.showLoading({
         title: '加载中...',
         mask: true
       });
-      const spotId = parseInt(options.id, 10); // 获取从导航中传来的景点ID
+      const spotId = parseInt(options.id, 10);
+
+      // 确保点赞ID为数字类型
+      const upvotedCommentIds = (await getUpvotedCommentIds(app.globalData.userInfo.userId)).data
+        .map(id => parseInt(id, 10))
+        .filter(id => !isNaN(id));
+
       this.setData({
-        upvotedCommentIds: (await getUpvotedCommentIds(app.globalData.userInfo.userId)).data,
+        upvotedCommentIds,
         userInfo: app.globalData.userInfo,
         ['spot.comments']: await getComments(spotId, 1, this.data.pageSize)
       });
-     app.globalData.upvotedCommentIds = this.data.upvotedCommentIds;
-      this.loadSpotDetail(spotId); // 根据ID加载景点详情
+
+      app.globalData.upvotedCommentIds = upvotedCommentIds;
+      this.loadSpotDetail(spotId);
     } catch (error) {
       console.error('页面加载错误:', error);
       wx.showToast({
@@ -73,6 +79,17 @@ Page({
       });
     } finally {
       wx.hideLoading();
+    }
+  },
+
+  onShow: function () {
+    if (this.data.spot && this.data.spot.id) {
+      const favoriteSpotIds = (app.globalData.favoriteSpotIds || [])
+        .map(id => parseInt(id, 10));
+      const isCollected = favoriteSpotIds.includes(parseInt(this.data.spot.id, 10));
+      this.setData({
+        collected: isCollected
+      });
     }
   },
 
@@ -99,12 +116,9 @@ Page({
       if (spotData) {
         // 格式化景点数据
         const formattedSpot = {
-          id: spotData.id,
+          id: parseInt(spotData.id, 10),
           name: spotData.name,
-          images: spotData.imagesURL || [
-            "https://imgtg-12w.pages.dev/file/9f3cb0f156b41b2dc0060.png",
-            "https://imgtg-12w.pages.dev/file/9f3cb0f156b41b2dc0060.png"
-          ],
+          images: spotData.imagesURL,
           address: spotData.location,
           hours: spotData.openTime,
           contact: spotData.contact,
@@ -239,7 +253,7 @@ Page({
 
   // 收藏/取消收藏
   toggleCollect: function () {
-    const spotId = this.data.spot.id;
+    const spotId = parseInt(this.data.spot.id, 10);
     let favoriteSpotIds = app.globalData.favoriteSpotIds || [];
 
     if (favoriteSpotIds.includes(spotId)) {
@@ -251,6 +265,7 @@ Page({
     }
 
     app.updateFavoriteSpotIds(favoriteSpotIds);
+    console.log("favoriteSpotIds from detail page: ", app.globalData.favoriteSpotIds);
     wx.showToast({
       title: this.data.collected ? '已收藏' : '已取消收藏',
       icon: 'success'
@@ -412,40 +427,34 @@ Page({
 
   // 判断是否点赞
   isUpvoted: function (commentId) {
-    return this.data.upvotedCommentIds.includes(commentId);
+    return this.data.upvotedCommentIds.includes(parseInt(commentId, 10));
   },
 
   // 点赞功能
-  onUpvote: function (e) {
-    const commentId = e.currentTarget.dataset.id;
-    const { spot, upvotedCommentIds } = this.data;
+  onUpvote: function(e) {
+    const commentId = parseInt(e.currentTarget.dataset.id, 10);
+    if (!commentId) return;
 
+    const { spot, upvotedCommentIds } = this.data;
     const commentIndex = spot.comments.findIndex(c => c.id === commentId);
 
-    if (commentIndex !== -1) {
-      const comment = spot.comments[commentIndex];
-      let updatedUpvotedIds;
+    if (commentIndex === -1) return;
 
-      if (upvotedCommentIds.includes(commentId)) {
-        // 取消点赞
-        updatedUpvotedIds = upvotedCommentIds.filter(id => id !== commentId);
-        this.setData({
-          [`spot.comments[${commentIndex}].upvotes`]: Math.max(comment.upvotes - 1, 0),
-          [`spot.comments[${commentIndex}].isUpvoted`]: false,
-          upvotedCommentIds: updatedUpvotedIds
-        });
-      } else {
-        // 添加点赞
-        updatedUpvotedIds = [...upvotedCommentIds, commentId];
-        this.setData({
-          [`spot.comments[${commentIndex}].upvotes`]: comment.upvotes + 1,
-          [`spot.comments[${commentIndex}].isUpvoted`]: true,
-          upvotedCommentIds: updatedUpvotedIds
-        });
-      }
+    const isUpvoted = upvotedCommentIds.includes(commentId);
+    const updatedUpvotedIds = isUpvoted
+      ? upvotedCommentIds.filter(id => id !== commentId)
+      : [...upvotedCommentIds, commentId];
 
-      app.updateUpvotedCommentIds(updatedUpvotedIds);
-    }
+    this.setData({
+      [`spot.comments[${commentIndex}].upvotes`]: Math.max(
+        spot.comments[commentIndex].upvotes + (isUpvoted ? -1 : 1),
+        0
+      ),
+      [`spot.comments[${commentIndex}].isUpvoted`]: !isUpvoted,
+      upvotedCommentIds: updatedUpvotedIds
+    });
+
+    app.updateUpvotedCommentIds(updatedUpvotedIds);
   },
 
 

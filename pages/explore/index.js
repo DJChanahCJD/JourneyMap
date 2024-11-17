@@ -29,7 +29,6 @@ Page({
     async onLoad() {
         const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
         const spots = await getSpots();
-        console.log("获取到的原始数据:", spots);
 
         this.setData({
             favoriteSpotIds: favoriteSpotIds,
@@ -236,8 +235,6 @@ Page({
             city: selectedCity,
             type: selectedType
         });
-
-        console.log("筛选后的数据:", filteredSpots);
 
         // 更新显示的数据，但不影响原始数据
         this.setData({

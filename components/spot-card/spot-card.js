@@ -1,5 +1,7 @@
 // components/spot-card/spot-card.js
 const app = getApp();
+const AMapWX = require('../../api/amap-wx.js').AMapWX;
+
 Component({
   /**
    * 组件的属性列表
@@ -55,7 +57,6 @@ Component({
     updateCollectedState(spot) {
       // 获取本地存储中的收藏 ID 列表
       let favoriteSpotIds = app.globalData.favoriteSpotIds || [];
-      console.log("Update isCollected state with spot.id:", spot.id, "isCollected:", favoriteSpotIds.includes(spot.id));
 
       // 更新 isCollected 数据
       this.setData({
@@ -114,48 +115,69 @@ Component({
     },
 
     calculateDistance() {
-      // 使用高德地图IP定位API
-      wx.request({
-        url: `https://restapi.amap.com/v3/ip?key=${getApp().globalData.amapKey}`,
-        success: (res) => {
-          if (res.data.status === '1') {
-            const { rectangle } = res.data;
-            // rectangle格式为"左下经度,左下纬度,右上经度,右上纬度"
-            const coords = rectangle.split(';')[0].split(',');
-            const latitude = (parseFloat(coords[1]) + parseFloat(coords[3])) / 2;
-            const longitude = (parseFloat(coords[0]) + parseFloat(coords[2])) / 2;
+      // 尝试获取缓存的位置信息
+      const app = getApp();
+      const cachedLocation = {
+        latitude: app.globalData.latitude,
+        longitude: app.globalData.longitude
+      };
 
-            // 计算直线距离
-            const distance = this.calculateLineDistance(
-              latitude,
-              longitude,
-              this.data.spot.latitude,
-              this.data.spot.longitude
-            );
+      if (cachedLocation.latitude && cachedLocation.longitude) {
+        // 使用缓存的位置信息计算距离
+        this.calculateDistanceWithLocation(cachedLocation);
+      } else {
+        // 如果没有缓存，使用 IP 定位
+        const amapInstance = new AMapWX({
+          key: getApp().globalData.amapKey
+        });
 
+        amapInstance.getRegeo({
+          success: (data) => {
+            console.log('IP定位成功:', data);
+            if (data && data[0]) {
+              const currentLocation = {
+                latitude: data[0].latitude,
+                longitude: data[0].longitude
+              };
+              // 缓存位置信息
+              app.updateLocation(currentLocation.latitude, currentLocation.longitude);
+              // 计算距离
+              this.calculateDistanceWithLocation(currentLocation);
+            }
+          },
+          fail: (error) => {
+            console.error('IP定位失败:', error);
             this.setData({
-              distance: this.formatDistance(distance)
+              ['formattedSpot.distance']: '未知'
             });
           }
+        });
+      }
+    },
+
+    calculateDistanceWithLocation(currentLocation) {
+      const amapInstance = new AMapWX({
+        key: getApp().globalData.amapKey
+      });
+
+      amapInstance.getDrivingRoute({
+        origin: `${currentLocation.longitude},${currentLocation.latitude}`,
+        destination: `${this.data.spot.longitude},${this.data.spot.latitude}`,
+        success: (data) => {
+          if (data && data.paths && data.paths[0]) {
+            const distance = data.paths[0].distance;
+            this.setData({
+              ['formattedSpot.distance']: this.formatDistance(parseFloat(distance))
+            });
+          }
+        },
+        fail: (error) => {
+          console.error('距离计算失败:', error);
+          this.setData({
+            ['formattedSpot.distance']: '未知'
+          });
         }
       });
-    },
-
-    // 计算两点之间的直线距离（使用哈弗赛因公式）
-    calculateLineDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // 地球半径，单位km
-      const dLat = this.toRad(lat2 - lat1);
-      const dLon = this.toRad(lon2 - lon1);
-      const a =
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) *
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c * 1000; // 转换为米
-    },
-
-    toRad(value) {
-      return value * Math.PI / 180;
     },
 
     formatDistance(distance) {
@@ -165,14 +187,14 @@ Component({
       return Math.round(distance) + 'm';
     },
 
-    // 添加数据格式转换方法
+    // 修改数据格式转换方法
     formatSpotData(spot) {
       return {
         id: spot.id,
         name: spot.name,
-        image: spot.imagesURL ? spot.imagesURL[0] : '', // 使用第一张图片作为封面
-        tags: spot.taglist || [], // 使用taglist作为标签
-        recommendation: spot.recomendation, // 注意后端字段拼写
+        image: spot.imagesURL ? spot.imagesURL[0] : '',
+        tags: spot.taglist || [],
+        recommendation: spot.recomendation,
         hours: spot.openTime,
         address: spot.location,
         latitude: parseFloat(spot.latitude),
