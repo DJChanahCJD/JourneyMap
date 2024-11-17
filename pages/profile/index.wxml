@@ -5,14 +5,18 @@
 	<!-- 关键代码 start -->
 	<view slot="scroll" class="content">
 	  <view class="row">
-		<view class="text1">头像：</view>
+		<view class="text1">头像</view>
 		<button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-		  <image class="avatar" src="{{userInfo.avatar || ''}}"></image>
+		  <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
 		</button>
 	  </view>
 	  <view class="row">
-		<view class="text1">昵称：</view>
-		<input type="nickname" class="name-input" name="nickname" value="{{userInfo.nickName||''}}" bindchange="onInput" placeholder="请输入昵称" />
+		<view class="text1">昵称</view>
+		<input type="nickname" class="name-input" name="nickname" value="{{userInfo.nickName}}" bindchange="onInput" placeholder="请输入昵称" />
+	  </view>
+	  <view class="row">
+		<view class="text1">个性签名</view>
+		<input disabled type="bio" class="bio-input" name="bio" value="{{userInfo.bio||'热爱旅行 | 探索世界'}}" bindchange="onInput" placeholder="请输入个性签名" />
 	  </view>
 	</view>
 	 <!-- 关键代码 end -->
@@ -20,4 +24,3 @@
 	  <t-button t-class="footer-btn" theme="primary" content="保存" size="medium" shape="round" hover-class="none" bindtap="tapSave"></t-button>
 	</view>
   </page-layout>
-  

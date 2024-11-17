@@ -21,9 +21,9 @@
   <view class="info-card">
     <view class="info-header">
       <view class="spot-name-container">
-        <view class="spot-name">{{spot.name}}</view>
-        <view class="tag-container">
-          <view class="tag">小众</view>
+        <view class="spot-name">{{spot.name || '景点名称'}}</view>
+        <view class="tag-container" wx:for="{{spot.tags || ['小众', '必去', '热门']}}" wx:key="tag">
+          <view class="tag">{{item}}</view>
         </view>
         <view class="collect-icon" catchtap="toggleCollect" data-id="{{spot.id}}">
           <image
@@ -35,7 +35,7 @@
       </view>
       <view class="address-container">
         <view class="address-text">
-          <text>{{spot.address}}</text>
+          <text>{{spot.address || '北京市东城区景山前街4号'}}</text>
           <button class="nav-button" bindtap="onNavigate">
             <image src="/resources/navigate.svg" class="icon-button"></image>
           </button>
@@ -45,25 +45,25 @@
             id="map"
             class="map"
             show-location
-            longitude="{{spot.longitude}}"
-            latitude="{{spot.latitude}}"
+            longitude="{{spot.longitude || 116.397155}}"
+            latitude="{{spot.latitude || 39.916344}}"
             scale="12"
-            style="width: 100%; height: 150rpx;"
+            style="width: 100%; height: 150rpx; margin:4rpx 0;"
           ></map>
         </view>
       </view>
     </view>
     <view class="info-item">
       <image src="/resources/clock.png" class="icon"></image>
-      <text>开放时间: {{spot.hours}}</text>
+      <text>开放时间: {{spot.hours || '开放时间'}}</text>
     </view>
     <view class="info-item">
       <image src="/resources/phone.png" class="icon"></image>
-      <text>联系方式: {{spot.contact}}</text>
+      <text>联系方式: {{spot.contact || '联系方式'}}</text>
     </view>
     <view class="info-item">
       <image src="/resources/official-account.png" class="icon"></image>
-      <text>公众号</text>
+      <text>官方链接: {{spot.links || '官方链接'}}</text>
     </view>
   </view>
 
@@ -71,7 +71,7 @@
   <view class="description-section">
     <view class="description-title">About</view>
     <view class="description-content">
-      <text>{{spot.description}}</text>
+      <text>{{spot.description || '很长很长很长很长很详细很详细很长很长很长很长很详细很详细很长很长很长很长很详细很详细很长很长很长很长很详细很详细的详细介绍'}}</text>
     </view>
   </view>
 
@@ -91,9 +91,9 @@
         <view class="comment-header">
           <image src="{{item.avatar || '/resources/default-avatar.png'}}" class="avatar"></image>
           <view class="comment-info">
-            <text class="author">{{item.author}}</text>
+            <text class="author">{{item.author || '匿名用户'}}</text>
             <view class="comment-time-rating">
-              <t-rate class="rating" value="{{item.rating}}" size="12px" disabled />
+              <t-rate class="rating" value="{{item.rating || 5}}" size="12px" disabled />
               <text class="comment-time">{{item.formattedTime}}</text>
             </view>
           </view>
@@ -136,28 +136,39 @@
         <!-- 回复输入框 -->
         <block wx:if="{{replyingTo === item.id}}">
           <view class="reply-input">
-            <input
+            <t-input
               placeholder="输入你的回复..."
-              bindinput="onReplyInput"
               value="{{newReply}}"
+              bindinput="onReplyInput"
+              data-field="newReply"
               class="reply-text-input"
+              borderless
+              adjust-position
             />
-            <button bindtap="submitReply" class="submit-reply-button">提交</button>
+            <t-button
+              bindtap="submitReply"
+              size="small"
+              theme="primary"
+              class="submit-reply-button"
+            >发布</t-button>
           </view>
         </block>
       </view>
     </block>
     <!-- 添加评论 -->
     <view class="add-comment">
-      <input
+      <t-input
         placeholder="写下你的评论..."
         bindinput="onCommentInput"
         value="{{newComment.content}}"
         class="comment-input"
+        size="small"
+        borderless
+        adjust-position
       />
       <view class="comment-actions">
         <t-rate value="{{newComment.rating}}" bind:change="onRateChange" />
-        <t-button theme="primary" bindtap="submitComment">发布</t-button>
+        <t-button class="comment-button" theme="primary" size="small" bindtap="submitComment">发布</t-button>
       </view>
     </view>
   </view>

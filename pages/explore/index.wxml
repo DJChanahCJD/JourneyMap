@@ -1,7 +1,5 @@
 <view class="explore-container">
-  <!-- 可换成搜索栏 -->
-  <top-bar></top-bar>
-
+  <top-bar />
   <t-dropdown-menu>
     <t-dropdown-item options="{{province.options}}" value="{{province.value}}" bindchange="onProvinceChange" />
     <t-dropdown-item options="{{city.options}}" value="{{city.value}}" bindchange="onCityChange" />
@@ -19,7 +17,5 @@
   </view>
 
   <!-- 底部导航栏 -->
-  <nav-bar></nav-bar>
+  <tab-bar />
 </view>
-
-

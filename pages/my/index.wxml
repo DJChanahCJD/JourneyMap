@@ -5,50 +5,56 @@
   }
 </wxs>
 <view class="my-container">
-  <top-bar></top-bar>
-  <view class="my-header">
-    <!-- 左侧个人信息 -->
-    <view class="profile-header" bind:tap="getUserProfile">
-      <button open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-        <image class="profile-avatar" src="{{avatarUrl}}"></image>
-      </button>
-      <input type="nickname" class="profile-name" placeholder="设置昵称">{{nickName ? nickName : "设置昵称"}}</input>
-    </view>
-    <!-- 右侧数据统计 -->
-    <view class="statistics-header">
-      <view class="city-count count-item">
-        <view class="city-icon">
-          <image src="/resources/city.svg" class="stat-icon"></image>
+  <top-bar />
+  <view class="my-content">
+    <view class="my-header">
+      <!-- 左侧个人信息 -->
+      <view class="profile-header" bind:tap="setUserProfile">
+        <image class="profile-avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
+        <view class="profile-info">
+          <view class="profile-name">{{userInfo.nickName || "设置昵称"}}</view>
+          <view class="profile-bio">热爱旅行 | 探索世界</view>
         </view>
-        <text class="count-number">{{cityCount}}</text>
-        <text class="count-text">城市</text>
       </view>
-      <view class="spot-count count-item">
-        <view class="spot-icon">
-          <image src="/resources/location-dot.svg" class="stat-icon"></image>
+
+      <!-- 右侧数据统计 -->
+      <view class="statistics-header">
+        <view class="count-item city-count">
+          <view class="count-label">已收录</view>
+          <view class="count-wrapper">
+            <view class="count-number">{{spotCount}}</view>
+            <view class="count-text">个地点</view>
+          </view>
+          <image class="count-icon" src="/resources/spot-icon.png" mode="aspectFit"></image>
         </view>
-        <text class="count-number">{{spotCount}}</text>
-        <text class="count-text">地点</text>
+        <view class="count-item spot-count">
+          <view class="count-label">覆盖</view>
+          <view class="count-wrapper">
+            <view class="count-number">{{cityCount}}</view>
+            <view class="count-text">个城市</view>
+          </view>
+          <image class="count-icon" src="/resources/city-icon.png" mode="aspectFit"></image>
+        </view>
       </view>
     </view>
-    <view class="recommendSpotBtn">
-      <button class="recommendSpotBtn-btn" bind:tap="handlePopup">
-        <image src="/resources/plus.svg" class="plus-icon"></image>
-        <text>推荐新地点</text>
-      </button>
+
+    <button class="wishlist-title" bind:tap="handlePopup">
+      <image
+        class="wishlist-icon"
+        src="/resources/wishlist.svg"
+        mode="scaleToFill"
+      />
+      <text class="wishlist-text">心愿单</text>
+    </button>
+
+    <view class="separator"></view>
+    <!-- 心愿单 -->
+    <view class="wishlist">
+      <spot-card class="spot-item" wx:for="{{favoriteSpots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" bind:favoriteupdate="handleFavoriteUpdate"></spot-card>
     </view>
   </view>
 
-  <!-- 心愿单 -->
-  <view class="wishlist">
-    <text class="wishlist-title">心愿单</text>
-    <spot-card class="spot-item" wx:for="{{favoriteSpots}}" wx:key="id" wx:for-item="spot" spot="{{spot}}" bind:favoriteupdate="handleFavoriteUpdate"/>
-  </view>
-
-  <!-- 底部导航栏 -->
-  <nav-bar></nav-bar>
-
-  <!-- 优化后的弹出窗口 -->
+  <!-- 推荐地点表单 -->
   <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
     <scroll-view scroll-y="true" class="block">
       <view class="header">
@@ -61,9 +67,10 @@
           <t-input
             label="地点名称"
             placeholder="请输入地点名称"
-            data-field="treasureName"
+            data-field="spotName"
             bindinput="handleInput"
             class="name-input-field"
+            adjust-position
           />
         </view>
 
@@ -94,38 +101,46 @@
         </view>
 
         <!-- 地点标签多选 -->
-        <view class="form-item">
+        <view class="form-item tags-item">
           <view class="form-title">地点标签</view>
-          <t-checkbox-group t-class="horizontal-box" value="{{tags}}" bind:change="onTagChange">
-            <view wx:for="{{tagsOptions}}" wx:key="index" class="card {{_.contain(tags, index) ? 'card--active' : ''}}">
-              <t-icon wx:if="{{_.contain(tags, index)}}" name="check" class="card__icon" ariaHidden="true" />
-              <t-checkbox value="{{index}}" label="{{item.label}}" icon="none" borderless />
-            </view>
-          </t-checkbox-group>
+          <view class="tags-container">
+            <t-check-tag
+              class="tag-item"
+              wx:for="{{tags}}"
+              wx:key="index"
+              variant="dark"
+              size="large"
+              bind:change="onTagChange"
+              data-value="{{item}}"
+              content="{{item}}"
+            >
+            </t-check-tag>
+          </view>
         </view>
 
-        <view class="form-item">
-          <view class="form-title">上传图片（可选）</view>
+        <view class="form-item upload-item">
+          <view class="form-title">上传图片</view>
           <t-upload
             mediaType="{{['image']}}"
             max="{{3}}"
             files="{{fileList}}"
             bind:add="handleAdd"
             bind:remove="handleRemove"
-            bing:tap="onUpload"
+            config="{{uploadConfig}}"
+            required
           >
           </t-upload>
         </view>
 
-
         <!-- 推荐理由 -->
         <view class="form-item">
-          <view class="form-title">推荐理由</view>
           <t-textarea
+            label="推荐理由"
             placeholder="请输入推荐理由"
             data-field="description"
             bindinput="handleInput"
             class="textarea-field"
+            adjust-position
           />
         </view>
         <!-- 提交按钮 -->
@@ -135,4 +150,6 @@
       </view>
     </scroll-view>
   </t-popup>
+  <!-- 底部导航栏 -->
+  <tab-bar />
 </view>

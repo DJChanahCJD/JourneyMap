@@ -2,5 +2,8 @@
     "files.associations": {
         "*.wxml": "html",
         "*.wxss": "css"
-    }
+    },
+    "ProjectTree.withComment": true,
+    "ProjectTree.commentDistance": 1,
+    "ProjectTree.loadIgnore": true
 }

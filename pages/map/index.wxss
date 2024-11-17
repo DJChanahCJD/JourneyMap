@@ -30,7 +30,7 @@
   transition: transform 0.1s ease, opacity 0.1s ease; /* 添加过渡效果 */
 }
 
-.button-item:active {
+.button-item:hover {
   transform: scale(0.95); /* 点击时稍微缩小 */
   opacity: 0.8; /* 点击时稍微降低透明度 */
 }
@@ -55,8 +55,10 @@
 .detail-card {
     position: absolute;
     scale: 0.95;
-    bottom: 160rpx;
+    bottom: calc(6% + 40px);
     z-index: 1000;
+    left: 0;
+    right: 0;
 }
 
 .block {

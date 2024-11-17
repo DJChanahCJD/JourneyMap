@@ -2,7 +2,7 @@ import cloudbase from "@cloudbase/js-sdk/app";
 import { registerAuth } from "@cloudbase/js-sdk/auth";
 import { registerAi } from "@cloudbase/js-sdk/ai";
 import AMap from '../../api/amap-wx.js';
-import { getSpots } from '../../api/spot';
+import { getSpots, getFavoriteSpotIds, getCategories } from '../../api/spot';
 
 const app = getApp();
 Page({
@@ -26,8 +26,8 @@ Page({
     latitude: 39.916527, // 默认纬度（北京市）
     longitude: 116.397128, // 默认经度（北京市）
     markers: [], // 标记点数组
-    selectedType: '分类', // 新增数据，保存当前选择的景点类型
-    typeList: ['全部', '文化', '自然', '历史', '艺术', '科技', '娱乐'], // 景点类型列表
+    selectedCategory: '分类', // 新增数据，保存当前选择的景点类型
+    categoryList: ['全部'], // 景点类型列表
     selectedSpot: null, // 保存当前选中的景点
     isShow: true,
     messages: [],
@@ -38,15 +38,50 @@ Page({
   },
 
   async onLoad() {
-    const spots = await getSpots();
-    this.setData({
-      favoriteSpotIds: app.globalData.favoriteSpotIds,
-      spots: spots
+    // 等待用户信息加载完成
+    await new Promise((resolve) => {
+      const checkUserInfo = setInterval(() => {
+        if (app.globalData.userInfo?.userId) {
+          clearInterval(checkUserInfo);
+          resolve();
+        }
+      }, 100);
     });
-    // 初始化高德地图实例
-    this.amapInstance = new AMap.AMapWX({key: this.data.amapKey});
 
-    // 获取用户位置并初始化markers
+    const userId = app.globalData.userInfo.userId;
+
+    // 并行请求数据
+    const [favoriteSpotIds, spots, categoryList] = await Promise.all([
+      getFavoriteSpotIds(userId),
+      getSpots(),
+      getCategories()
+    ]);
+
+    console.log("favoriteSpotIds from map: ", favoriteSpotIds);
+
+    // 一次性更新数据
+    this.setData({
+      favoriteSpotIds: favoriteSpotIds,
+      spots: spots.map(spot => {
+        return {
+          ...spot,
+          iconPath: this.data.iconPath
+        };
+      }),
+      categoryList: ['全部', ...categoryList]
+    });
+
+    this.data.spots.forEach(spot => {
+      console.log("spot id: ", spot.id, typeof spot.id);
+      spot.id = parseInt(spot.id, 10);
+      console.log("spot id: ", spot.id, typeof spot.id);
+
+    });
+
+    app.globalData.favoriteSpotIds = this.data.favoriteSpotIds;
+
+    // 初始化地图
+    this.amapInstance = new AMap.AMapWX({ key: this.data.amapKey });
     this.getUserLocation();
   },
 
@@ -55,16 +90,60 @@ Page({
       favoriteSpotIds: app.globalData.favoriteSpotIds,
       isShow: false,
     });
+    console.log("onShow selectedSpot wx.getStorageSync: ", this.data.selectedSpot);
     console.log("selectedSpot: ", this.data.selectedSpot);
-    if (this.data.selectedSpot) {
-      this.data.selectedSpot.isCollected = this.data.favoriteSpotIds.includes(this.data.selectedSpot.id);
-      console.log("selectedSpot: ", this.data.selectedSpot);
+    console.log("favoriteSpotIds: ", this.data.favoriteSpotIds);
+    this.setData({
+      isShow: true,
+      markers: this.data.markers.map(marker => {
+        if (marker.id === this.data.selectedSpot.id) {
+          marker.width = this.data.iconWidth * 1.2;
+          marker.height = this.data.iconHeight * 1.2;
+          marker.iconPath = this.data.selectedIconPath;
+        } else {
+          marker.width = this.data.iconWidth;
+          marker.height = this.data.iconHeight;
+          marker.iconPath = this.data.iconPath;
+        }
+        if (this.data.favoriteSpotIds.includes(marker.id)) {
+          marker.iconPath = this.data.collectedIconPath;
+        }
+        return marker;
+      }),
+    });
+  },
+
+  handleFavoriteUpdate: function (e) {
+    const { spotId, favoriteSpotIds } = e.detail;
+    console.log("handleFavoriteUpdate: ", spotId, favoriteSpotIds);
+
+    // 更新收藏列表
+    this.setData({ favoriteSpotIds });
+
+    // 找到需要更新的marker的索引
+    const markerIndex = this.data.markers.findIndex(marker => marker.id === spotId);
+    console.log("updateMarkerIndex: ", markerIndex);
+    // 如果找到对应的marker，只更新这一个marker的图标
+    if (markerIndex !== -1) {
+        this.setData({
+            [`markers[${markerIndex}].iconPath`]: favoriteSpotIds.includes(spotId)
+                ? this.data.collectedIconPath
+                : this.data.selectedIconPath
+        });
     }
-    this.setData({ isShow: true });
   },
 
   getUserLocation: function () {
     var that = this;
+    // 先确保spots数据格式正确
+    const formattedSpots = this.data.spots.map(spot => ({
+      ...spot,
+      latitude: parseFloat(spot.latitude),
+      longitude: parseFloat(spot.longitude)
+    }));
+
+    this.setData({ spots: formattedSpots });
+
     this.amapInstance.getRegeo({
       success: (res) => {
         console.log("res: ", res);
@@ -73,33 +152,45 @@ Page({
             latitude: res[0].latitude,
             longitude: res[0].longitude
           });
-
-          console.log("latitude: ", this.data.latitude);
-          console.log("longitude: ", this.data.longitude);
         }
       },
       fail: (err) => {
         console.log("获取位置失败: ", err);
+        // 即使获取位置失败，也要显示景点标记
+        this.setSpots(formattedSpots);
       }
     });
-    this.setSpots(this.data.spots, { latitude: this.data.latitude, longitude: this.data.longitude });
-    this.findNearestSpot({ latitude: this.data.latitude, longitude: this.data.longitude });
+    // 保证在获取失败也能使用默认位置
+    this.setSpots(formattedSpots);
+    this.findNearestSpot({
+      latitude: this.data.latitude,
+      longitude: this.data.longitude
+    });
   },
 
-  setSpots(spots, userLocation) {
-    console.log("favoriteSpotIds: ", this.data.favoriteSpotIds);
-    console.log("spots: ", spots);
-    const markers = spots.map(spot => ({
-      id: spot.id,
-      latitude: spot.latitude,
-      longitude: spot.longitude,
-      title: spot.name,
-      iconPath: this.data.favoriteSpotIds.includes(spot.id) ? this.data.collectedIconPath : this.data.iconPath,
-      width: this.data.iconWidth,
-      height: this.data.iconHeight
-    }));
-    this.setData({ markers: markers });
-    console.log("setSpots markers: ", markers);
+  setSpots(spots) {
+    console.log("setSpots开始执行，spots数量:", spots.length);
+    const markers = spots.map(spot => {
+      const marker = {
+        id: parseInt(spot.id),
+        latitude: parseFloat(spot.latitude),
+        longitude: parseFloat(spot.longitude),
+        title: spot.name,
+        iconPath: this.data.favoriteSpotIds.includes(parseInt(spot.id))
+          ? this.data.collectedIconPath
+          : this.data.iconPath,
+        width: this.data.iconWidth,
+        height: this.data.iconHeight
+      };
+      console.log("创建marker:", marker);
+      return marker;
+    });
+
+    this.setData({
+      markers: markers
+    }, () => {
+      console.log("markers设置完成，数量:", markers.length);
+    });
   },
 
   findNearestSpot: function (userLocation) {
@@ -157,11 +248,11 @@ Page({
   },
 
   // 点击分类按钮
-  onTypeChange: function (e) {
-    const selectedTypeIndex = e.detail.value;
-    const selectedType = this.data.typeList[selectedTypeIndex];
+  onCategoryChange: function (e) {
+    const selectedCategoryIndex = e.detail.value;
+    const selectedCategory = this.data.categoryList[selectedCategoryIndex];
     this.setData({
-      selectedType: selectedType
+      selectedCategory: selectedCategory
     }, () => {
       this.updateMarkers();
     });
@@ -170,7 +261,7 @@ Page({
   // 更新地图标记
   updateMarkers: function () {
     const filteredSpots = this.data.spots.filter(spot => {
-      return this.data.selectedType === '全部' || spot.type === this.data.selectedType;
+      return this.data.selectedCategory === '全部' || spot.category === this.data.selectedCategory;
     });
 
     this.setSpots(filteredSpots);
@@ -179,8 +270,12 @@ Page({
   // 点击标记
   onMarkerTap: function (e) {
     if (e.markerId === this.data.selectedMarkerId) return;
+    console.log("e: ", e);
     const markerId = e.markerId;
     const selectedSpot = this.data.spots.find(spot => spot.id === markerId);
+    console.log("spotid: ", this.data.spots[0].id, typeof this.data.spots[0].id);
+    console.log("markerid: ", markerId, typeof markerId);
+    console.log("onMarkerTap selectedSpot: ", selectedSpot);
     if (selectedSpot) {
       this.setData({
         markers: this.data.markers.map(marker => {

@@ -1,6 +1,5 @@
 <view class="container">
-  <top-bar></top-bar>
-
+  <top-bar />
   <map
       id="map"
       class="map"
@@ -28,10 +27,10 @@
       <image src="/resources/robot-icon.png" class="button-icon"/>
       <text class="button-text">AI</text>
     </button>
-    <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
+    <picker mode="selector" range="{{categoryList}}" bindchange="onCategoryChange">
         <button class="button-item">
           <image src="/resources/layer-icon.png" class="button-icon"/>
-          <text class="button-text">{{selectedType == "全部" ? "分类" : selectedType}}</text>
+          <text class="button-text">{{selectedCategory == "全部" ? "分类" : selectedCategory}}</text>
         </button>
     </picker>
     <button class="button-item" bindtap="navigateToFeedback">
@@ -40,7 +39,7 @@
     </button>
   </view>
 
-  <spot-card class="detail-card" wx:if="{{selectedSpot && isShow}}" spot="{{selectedSpot}}" />
+  <spot-card class="detail-card" wx:if="{{selectedSpot && isShow}}" spot="{{selectedSpot}}" bind:favoriteupdate="handleFavoriteUpdate"/>
 
   <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
     <view class="block">
@@ -63,6 +62,5 @@
       </view>
     </view>
   </t-popup>
-
-  <nav-bar class="nav-bar" />
+  <tab-bar class="tab-bar" />
 </view>

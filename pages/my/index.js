@@ -1,51 +1,63 @@
 // pages/my/index.js
 
 const app = getApp();
-const { getSpots } = require('../../api/spot');
+const { getSpots, recommendSpot } = require('../../api/spot');
+const { getUserInfo } = require('../../api/user');
+const { baseUrl } = require('../../api/baseUrl');
+const FormData = require('../../utils/formData.js');
 
 Page({
     data: {
         cityCount: 13, // 用户所探索的城市数量
         spotCount: 123, // 用户收藏的景点数量
-        avatarUrl: '/resources/default-avatar.png', // 默认头像
-        nickName: null, // 用户昵称
+        userInfo: {
+          avatar: '/resources/default-avatar.png', // 默认头像
+          nickName: null, // 用户昵称
+        },
         spots: [],
         favoriteSpotIds: [],
         favoriteSpots: [],
-        treasureName: '',
+        spotName: '',
         category: '',
         categoryText: '',
         categoryValue: [],
         categoryVisible: false,
-        categories: [
-          { label: '自然景观', value: '自然景观' },
-          { label: '文化遗址', value: '文化遗址' },
-          { label: '美食', value: '美食' },
-          { label: '娱乐', value: '娱乐' }
-        ],
-        tagsOptions: [
-          { label: '小众', value: 0 },
-          { label: '免费', value: 1 },
-          { label: '打卡', value: 2 },
-          { label: '摄影', value: 3 },
-          { label: '亲子', value: 4 },
-          { label: '情侣', value: 5 },
-          { label: '必去', value: 6 }
-        ],
-        tags: [], // 存储选中的标签值，使用数字
+        categories: [],
+        tags: [],
+        selectedTags: [], // 存储选中的标签值，使用数字
         description: '',
         location: '',
         fileList: [],
+        uploadConfig: {
+          max: 2 * 1024 * 1024, // 2MB
+          sizeType: ['compressed'],
+          sourceType: ['album', 'camera']
+        }
     },
 
 
     async onLoad() {
       console.log("onLoad!!");
-      const spots = await getSpots(); // 等待获取到 spots 数据
+      const spots = (await getSpots()); // 等待获取到 spots 数据
       this.setData({ spots }, () => {
         // 在 setData 完成后再调用 fetchUserData
         this.fetchUserData();
       });
+      this.setData({ userInfo: app.globalData.userInfo,
+        spotCount: spots.length,
+        cityCount: spots.map(spot => spot.province).filter((value, index, self) => self.indexOf(value) === index).length,
+       });
+       console.log("app.globalData.tags: ", app.globalData.tags);
+       console.log("app.globalData.categories: ", app.globalData.categories);
+       this.setData({
+         tags: app.globalData.tags,
+         categories: app.globalData.categories.map(category => ({
+           label: category,
+           value: category
+         }))
+       });
+       console.log("tags: ", this.data.tags);
+       console.log("categories: ", this.data.categories);
     },
 
     onShow() {
@@ -56,6 +68,7 @@ Page({
     fetchUserData() {
       const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
       this.setData({
+        userInfo: app.globalData.userInfo,
         favoriteSpotIds: favoriteSpotIds,
         favoriteSpots: this.data.spots.filter(spot => favoriteSpotIds.includes(spot.id))
       });
@@ -65,47 +78,25 @@ Page({
     },
 
     handleAdd(e) {
-      console.log("handleAdd: ", e);
-      const { fileList } = this.data;
       const { files } = e.detail;
+      const validFiles = files.filter(file => {
+        if (file.size > 2 * 1024 * 1024) {
+          wx.showToast({ title: '图片大小不能超过2MB', icon: 'none' });
+          return false;
+        }
+        return true;
+      });
+
       this.setData({
-        fileList: [...fileList, ...files], // 此时设置了 fileList 之后才会展示选择的图片
+        fileList: [...this.data.fileList, ...validFiles]
       });
     },
 
-    onUpload(file) {
-      const { fileList } = this.data;
-
-      this.setData({
-        fileList: [...fileList, { ...file, status: 'loading' }],
-      });
-      const { length } = fileList;
-
-      const task = wx.uploadFile({
-        url: 'https://example.weixin.qq.com/upload', // 仅为示例，非真实的接口地址
-        filePath: file.url,
-        name: 'file',
-        formData: { user: 'test' },
-        success: () => {
-          this.setData({
-            [`fileList[${length}].status`]: 'done',
-          });
-        },
-      });
-      task.onProgressUpdate((res) => {
-        this.setData({
-          [`fileList[${length}].percent`]: res.progress,
-        });
-      });
-    },
     handleRemove(e) {
       const { index } = e.detail;
       const { fileList } = this.data;
-
       fileList.splice(index, 1);
-      this.setData({
-        fileList,
-      });
+      this.setData({ fileList });
     },
 
 
@@ -122,16 +113,23 @@ Page({
       });
     },
 
-    getUserProfile(){
+    setUserProfile() {
       wx.navigateTo({
         url: '/pages/profile/index',
+        fail: (err) => {
+          console.error('页面跳转失败:', err);
+          wx.showToast({
+            title: '页面跳转失败',
+            icon: 'none'
+          });
+        }
       });
     },
 
     onChooseAvatar(e) {
-      const { avatarUrl } = e.detail
+      const { avatar } = e.detail
       this.setData({
-        avatarUrl,
+        avatar,
       })
     },
 
@@ -156,11 +154,12 @@ Page({
     },
 
     handleInput(e) {
-      const { field } = e.currentTarget.dataset;
-      this.setData({
-        [field]: e.detail.value
-      });
-      console.log('field:', field, 'value:', e.detail.value);
+      // const { field } = e.currentTarget.dataset;
+      // this.setData({
+      //   [field]: e.detail.value
+      // });
+      // console.log('field:', field, 'value:', e.detail.value);
+      // 不在使用setData，而是使用selectComponent来获取input的值，避免抽搐
     },
 
     // 选择地点类型的 picker 打开
@@ -229,48 +228,120 @@ Page({
       });
     },
 
-    // 标签选择处理
-    onTagChange(e) {
-      this.setData({
-        tags: e.detail.value
-      });
-      console.log('e.detail.value:', e.detail.value);
-      console.log('tags:', this.data.tagsOptions);
-      console.log('tags:', this.data.tagsOptions[e.detail.value[e.detail.value.length - 1]].label);
-    },
+    /**
+   * 处理标签的选中和取消选中
+   * @param {Event} e
+   */
+  onTagChange(e) {
+    const tagValue = e.currentTarget.dataset.value;
+    let { selectedTags } = this.data;
+    const index = selectedTags.indexOf(tagValue);
+    if (index > -1) {
+      // 已选中，取消选择
+      selectedTags.splice(index, 1);
+    } else {
+      // 未选中，添加选择
+      selectedTags.push(tagValue);
+    }
+    this.setData({
+      selectedTags
+    });
+    console.log('selectedTags:', this.data.selectedTags);
+  },
 
     // 表单提交
-    submitForm(e) {
-      // 将所有选中的标签转换为文本标签数组
-      // 在小程序中，我们应该使用this.data来访问数据
-      // 如果treasureName为空，我们可以尝试从输入框中获取最新值
-      const treasureNameInput = this.selectComponent('.name-input-field');
-      this.data.treasureName = treasureNameInput ? treasureNameInput.data.value : '';
-      this.data.description = this.selectComponent('.textarea-field').data.value;
-      if (!this.data.treasureName) {
-        console.warn('地点名称为空，请确保用户已输入');
-      } else {
-        console.log('地点名称:', this.data.treasureName);
-      }
+    async submitForm(e) {
+      try {
+        // 获取并验证表单数据
+        const spotNameInput = this.selectComponent('.name-input-field');
+        const spotName = spotNameInput ? spotNameInput.data.value : '';
+        const description = this.selectComponent('.textarea-field').data.value;
+        const location = this.selectComponent('.address-input-field').data.value;
+        const { category, selectedTags, fileList } = this.data;
 
-      // 更新this.data中的treasureName
-      this.setData({ treasureName: this.data.treasureName });
-      const { treasureName, category, tags, description, location } = this.data;
-      if (!treasureName || !category || !tags.length || !description || !location || !description.trim()) {
-        console.log('treasureName:', treasureName, 'category:', category, 'tags:', tags, 'description:', description, 'location:', location, 'description.trim():', description.trim());
+        // 表单验证
+        if (!spotName || !category || !selectedTags.length || !description?.trim() || !location || fileList.length === 0) {
+          wx.showToast({
+            title: '请完整填写所有必填项',
+            icon: 'none'
+          });
+          return;
+        }
+
+        // 创建 FormData
+        const formData = new FormData();
+
+        // 添加表单数据
+        formData.append('uuid', app.globalData.userInfo.userId);
+        formData.append('scenicName', spotName);
+        formData.append('address', location);
+        formData.append('category', category);
+        formData.append('content', description);
+        formData.append('tags', selectedTags.array);
+        selectedTags.forEach(tag => {
+          formData.append('tags', tag);
+        });
+        console.log('formData.getData().tags:', formData.getData().tags); // undefined
+        // 处理多张图片
+        for (let i = 0; i < fileList.length; i++) {
+          formData.appendFile('file', fileList[i].url, `image_${i}.jpg`);
+        }
+
+        // 获取请求数据
+        const data = formData.getData();
+
+
+        // 发送请求 - 确保 baseUrl 是字符串
+        console.log('Request URL:', `${baseUrl}/audit/postAuditItem`); // 调试用
+        console.log('Request Data:', formData.getData()); // 调试用
+        wx.request({
+          url: `${baseUrl}/audit/postAuditItem`,
+          method: 'POST',
+          header: {
+            'content-type': data.contentType  // 使用 FormData 生成的 contentType
+          },
+          data: data.buffer,
+          success: (res) => {
+            if (res.data.code === 200) {
+              wx.showToast({ title: '提交成功', icon: 'success' });
+              this.resetForm();
+            } else {
+              throw new Error(res.data.msg || '提交失败');
+            }
+          },
+          fail: (error) => {
+            console.error('提交失败:', error);
+            wx.showToast({ title: '提交失败，请重试', icon: 'none' });
+          }
+        });
+
+      } catch (error) {
+        console.error('提交失败:', error);
         wx.showToast({
-          title: '请完整填写所有必填项',
+          title: error.message || '提交失败，请重试',
           icon: 'none'
         });
-        return;
       }
-      console.log("提交表单...")
-      this.data.tags = this.data.tags.map(index => this.data.tagsOptions[index].label);
-      console.log('treasureName:', treasureName, 'category:', category, 'tags:', tags, 'description:', description, 'location:', location, 'description.trim():', description.trim());
-      wx.showToast({
-        title: '表单提交成功',
-        icon: 'success'
+    },
+
+    resetForm() {
+      this.setData({
+        spotName: '',
+        category: '',
+        categoryText: '',
+        selectedTags: [],
+        tags: [],
+        description: '',
+        location: '',
+        fileList: [],
+        visible: false
       });
-      this.setData({ visible: false });
+
+      ['name-input-field', 'textarea-field', 'address-input-field'].forEach(selector => {
+        const component = this.selectComponent(`.${selector}`);
+        if (component) {
+          component.setData({ value: '' });
+        }
+      });
     }
 });

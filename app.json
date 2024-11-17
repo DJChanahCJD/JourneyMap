@@ -2,9 +2,7 @@
   "pages": [
     "pages/map/index",
     "pages/explore/index",
-    "pages/my/index",
-    "pages/logs/logs",
-    "pages/profile/index"
+    "pages/my/index"
   ],
   "subPackages": [
     {
@@ -12,13 +10,20 @@
       "pages": [
         "index"
       ]
+    }, {
+      "root": "pages/profile",
+      "pages": [
+        "index"
+      ]
     }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "宝藏猎人",
-    "navigationStyle": "default"
+    "navigationBarBackgroundColor": "#50A387",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "旅行地图",
+    "navigationStyle": "default",
+    "showNavigationBarLoading": true,
+    "navigationBarTitleWeight": "bold"
   },
   "useExtendedLib": {
     "weui": true
@@ -26,7 +31,7 @@
   "usingComponents": {
     "t-button": "/miniprogram_npm/tdesign-miniprogram/button/button",
     "top-bar": "/components/top-bar/top-bar",
-    "nav-bar": "/components/nav-bar/nav-bar"
+    "tab-bar": "/components/tab-bar/tab-bar"
   },
   "renderer": "webview",
   "componentFramework": "glass-easel",
@@ -37,6 +42,9 @@
       "desc": "你的位置信息将用于小程序位置接口的效果展示"
     }
   },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
   "embeddedAppIdList": [
     "wx8abaf00ee8c3202e"
   ],

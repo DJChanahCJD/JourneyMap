@@ -1,104 +1,109 @@
 // app.js
-// import { init } from '@cloudbase/weda-client';
-// init({
-//   envID: 'journeymap-8guldi1x22f48179', // 云开发环境Id
-//   appConfig: {
-//     staticResourceDomain: 'https://journeymap-8guldi1x22f48179.ap-shanghai.tcb-api.tencentcloudapi.com', // 云开发环境下静态托管域名，用于使用素材资源
-//   }
-// })
-// const APPID = "wx39efc4783f761db1";
-// const SECRET = "24eaf3fd01e92b853c546514c3a02a9f";
-// let JSCODE = "";
-// let authorization_code = "";
+const { login, getUserInfo } = require('./api/user');
+const { getFavoriteSpotIds, updateFavoriteSpotIds, getTags, getCategories } = require('./api/spot');
+const { getUpvotedCommentIds, updateUpvotedCommentIds } = require('./api/comment');
 
-
-const { login } = require('./api/user');
-const { getFavoriteSpotIds, updateFavoriteSpotIds } = require('./api/spot')
-const { getUpvotedCommentIds, updateUpvotedCommentIds } = require('./api/comment')
 App({
   globalData: {
-    favoriteSpotIds: wx.getStorageSync('favoriteSpotIds') || [],
+    userInfo: wx.getStorageSync('userInfo') || {
+      userId: null,
+      nickName: null,
+      avatar: null,
+    },
+    tags: [],
+    categories: [],
+    favoriteSpotIds: [],
     upvotedCommentIds: [],
-    userInfo: null,
-    openId: null,
   },
 
+  // 更新收藏景点 ID
   updateFavoriteSpotIds(favoriteSpotIds) {
+    this.logDebug("Updating favoriteSpotIds", favoriteSpotIds);
     this.globalData.favoriteSpotIds = favoriteSpotIds;
-    wx.setStorageSync('favoriteSpotIds', this.globalData.favoriteSpotIds);
+    updateFavoriteSpotIds(this.globalData.userInfo.userId, favoriteSpotIds)
+        .then(response => this.logDebug("Favorite spot IDs updated successfully", response))
+        .catch(error => console.error('Failed to update favorite spot IDs:', error));
   },
 
+  // 更新点赞评论 ID
   updateUpvotedCommentIds(upvotedCommentIds) {
+    this.logDebug("Updating upvotedCommentIds", upvotedCommentIds);
     this.globalData.upvotedCommentIds = upvotedCommentIds;
-    wx.setStorageSync('upvotedCommentIds', this.globalData.upvotedCommentIds);
+    updateUpvotedCommentIds(this.globalData.userInfo.userId, upvotedCommentIds)
+        .then(response => this.logDebug("Upvoted comment IDs updated successfully", response))
+        .catch(error => console.error('Failed to update upvoted comment IDs:', error));
   },
 
-  onLaunch() {
-    // 登录
-    wx.login({
-      success: res => {
-        if (res.code) {
-          // 将 code 发送到后端
-          login(res.code).then(response => {
-            console.log("response: ", response);
-            console.log("response.openId: ", response.openId);
-            this.globalData.openId = response.openId;
-            console.log('获取到的 openid:', this.globalData.openId);
+  // 更新用户信息
+  updateUserInfo(userInfo) {
+    this.logDebug("Updating userInfo", userInfo);
 
-            getFavoriteSpotIds(this.globalData.openId).then(response => {
-              console.log("favprote response: ", response);
-              wx.setStorageSync('favoriteSpotIds', response);
-              console.log("favoriteSpotIds: ", wx.getStorageSync('favoriteSpotIds'));
-              console.log("favoriteSpotIds type: ", typeof wx.getStorageSync('favoriteSpotIds'));
-            }).catch(error => {
-              console.error('获取收藏的景点 ID 失败:', error);
-            });
-            getUpvotedCommentIds(this.globalData.openId).then(response => {
-              console.log("response: ", response);
-              wx.setStorageSync('upvotedCommentIds', response.commentIds);
-            }).catch(error => {
-              console.error('获取点赞的评论 ID 失败:', error);
-            });
-          }).catch(error => {
-            console.error('获取 openid 失败:', error);
-          });
+    this.globalData.userInfo = { userId: userInfo.userId || userInfo.uuid, avatar: userInfo.avatar || userInfo.avatarUrl, nickName: userInfo.nickName || userInfo.name };
+    wx.setStorageSync('userInfo', userInfo);
+  },
+
+  // 统一日志管理
+  logDebug(message, data) {
+    console.log(`[DEBUG] ${message}: `, data);
+  },
+
+  // 应用启动时执行
+  onLaunch() {
+    this.handleUserLogin();
+    getTags().then(res => this.globalData.tags = res);
+    getCategories().then(res => this.globalData.categories = res);
+    console.log("globalData: ", this.globalData);
+  },
+
+  // 处理用户登录逻辑
+  handleUserLogin() {
+    wx.login({
+      success: ({ code }) => {
+        if (code) {
+          this.logDebug("Login code obtained", code);
+          login(code)
+            .then(response => {
+              this.logDebug("Login response obtained", response);
+              this.globalData.userInfo.userId = response.data.openid;
+              this.logDebug("Login globalData.userInfo obtained", this.globalData.userInfo);
+              this.getUserSettings();
+            })
+            .catch(error => console.error('Failed to obtain userId:', error));
         } else {
-          console.log('登录失败：' + res.errMsg);
+          console.error('Login failed:', res.errMsg);
         }
       }
     });
+  },
 
-    // 获取用户信息
+  // 获取用户设置信息
+  getUserSettings() {
     wx.getSetting({
       success: res => {
+        this.logDebug("User settings obtained", res);
         if (res.authSetting['scope.userInfo']) {
-          console.log("getSetting!!!");
-          wx.getUserProfile({
-            desc: '用于完善个人资料',
-            success: res => {
-              // 将用户信息存储到 globalData
-              this.globalData.userInfo = res.userInfo;
-              this.globalData.openId = res.openId;
-              console.log("res: ", res);
-              console.log("this.globalData.openId: ", this.globalData.openId);
-              console.log("this.globalData.userInfo: ", this.globalData.userInfo);
-            }
-          });
+          getUserInfo(this.globalData.userInfo.userId)
+            .then(response => {
+              console.log("updateUserInfo:", response);
+              this.updateUserInfo(response.data);
+            })
+            .catch(error => console.error('Failed to get user info:', error));
         }
       }
     });
   },
 
+  // 应用隐藏时执行
   onHide() {
-    updateFavoriteSpotIds(this.globalData.openId, wx.getStorageSync('favoriteSpotIds')).then(response => {
-      console.log("response: ", response);
-    }).catch(error => {
-      console.error('更新收藏的景点 ID 失败:', error);
-    });
-    updateUpvotedCommentIds(this.globalData.openId, wx.getStorageSync('upvotedCommentIds')).then(response => {
-      console.log("response: ", response);
-    }).catch(error => {
-      console.error('更新点赞的评论 ID 失败:', error);
-    });
+    const { userId, favoriteSpotIds, upvotedCommentIds } = this.globalData;
+    if (userId) {
+      updateFavoriteSpotIds(userId, favoriteSpotIds)
+        .then(response => this.logDebug("Favorite spot IDs updated successfully", response))
+        .catch(error => console.error('Failed to update favorite spot IDs:', error));
+
+      updateUpvotedCommentIds(userId, upvotedCommentIds)
+        .then(response => this.logDebug("Upvoted comment IDs updated successfully", response))
+        .catch(error => console.error('Failed to update upvoted comment IDs:', error));
+    }
   },
 });

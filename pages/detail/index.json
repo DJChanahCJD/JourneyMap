@@ -4,6 +4,7 @@
   "component": true,
   "usingComponents": {
     "t-rate": "/miniprogram_npm/tdesign-miniprogram/rate/rate",
-    "t-button": "/miniprogram_npm/tdesign-miniprogram/button/button"
+    "t-button": "/miniprogram_npm/tdesign-miniprogram/button/button",
+    "t-input": "/miniprogram_npm/tdesign-miniprogram/input/input"
   }
 }

@@ -1,1 +1,4 @@
-export const baseUrl = "https://api.example.com";
+import { config } from '../config/env';
+
+export const baseUrl = config.baseUrl;
+

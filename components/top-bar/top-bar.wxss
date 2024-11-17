@@ -3,10 +3,12 @@
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  height: 165rpx;
-  margin-top: 20rpx;
   width: 100%;
-  padding-left: 20rpx;
+  /* 使用 calc 动态计算高度 */
+  height: calc(100% - env(safe-area-inset-top));
+  /* 使用 padding-top 确保内容不被状态栏遮挡 */
+  padding-top: env(safe-area-inset-top);
+  background-color: #fff;
 }
 
 .separator {
@@ -19,6 +21,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 18px;
+    margin-left: 20rpx;
 }
 
 .logo {

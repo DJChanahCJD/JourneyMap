@@ -1,7 +1,7 @@
 .content {
 	padding: 20rpx;
   }
-  
+
   .info__footer {
 	display: flex;
 	justify-content: center;
@@ -10,51 +10,60 @@
 	padding-top: 20rpx;
 	background: #fff;
   }
-  
+
   .info__footer .footer-btn {
 	width: 398rpx;
   }
-  
+
   .footer-btn {
 	background: linear-gradient(90deg, #34AAFF 0%, #0A73EE 100%) !important;
 	border: none !important;
   }
-  
+
   .footer-btn::after {
 	border: none !important;
   }
-  
+
   .content .row {
 	display: flex;
 	align-items: center;
 	height: 110rpx;
 	padding-left: 20rpx;
   }
-  
+
   .content .text1 {
 	flex: 2;
   }
-  
+
   .content .name-input,
-  .content .avatar-wrapper {
+  .content .avatar-wrapper,
+  .content .bio-input {
 	flex: 6;
 	text-align: right;
 	background-color: transparent;
   }
-  
+
+  .content .name-input,
+  .content .bio-input {
+	margin-right: 30rpx;
+  }
+
+  .content .bio-input {
+	color: #999;
+  }
+
   .content .avatar-wrapper::after {
 	border: none !important;
   }
-  
+
   .content .avatar-wrapper {
 	display: flex;
 	justify-content: flex-end;
   }
-  
+
   .content .avatar-wrapper .avatar {
 	display: block;
 	width: 100rpx;
 	height: 100rpx;
 	border-radius: 50%;
   }
-  

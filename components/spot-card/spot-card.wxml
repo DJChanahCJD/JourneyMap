@@ -1,15 +1,13 @@
-<view class="card-container" bindtap="navigateToDetail" data-id="{{spot.id}}">
-	<image class="card-image" src="{{spot.image}}" mode="aspectFill"></image>
+<view class="card-container" bindtap="navigateToDetail" data-id="{{formattedSpot.id}}">
+	<image class="card-image" src="{{formattedSpot.image}}" mode="aspectFill"></image>
 	<view class="card-info">
 		<view class="header-container">
 			<view class="card-title-container">
-				<text class="card-title">{{spot.name}}</text>
-				<view class="tag-container">
-					<text class="tag">小众</text>
-					<text class="tag">必去</text>
-					<text class="tag">住宿</text>
+				<text class="card-title">{{formattedSpot.name}}</text>
+				<view class="tag-container" wx:for="{{formattedSpot.tags}}" wx:key="index">
+					<text class="tag">{{item}}</text>
 				</view>
-				<view class="collect-icon" catchtap="toggleCollect" data-id="{{spot.id}}">
+				<view class="collect-icon" catchtap="toggleCollect" data-id="{{formattedSpot.id}}">
 					<image
 						class="collect-icon"
 						src="{{isCollected ? '/resources/filled-star.svg' : '/resources/empty-star.svg'}}"
@@ -18,15 +16,15 @@
 				</view>
 			</view>
 			<view class="service-container">
-				<view class="service">景点</view>
-				<view class="service">美食</view>
-				<view class="service">住宿</view>
+				<view class="service" wx:if="{{formattedSpot.category}}">{{formattedSpot.category}}</view>
 			</view>
-			<text class="card-description">{{spot.description}}</text>
+			<text class="card-recommendation">{{formattedSpot.recommendation}}</text>
 		</view>
 		<view class="footer-container">
-			<view class="address">
-				<text class="address-text">{{spot.address}}</text>
+			<text class="time-text">{{formattedSpot.hours}}</text>
+			<view class="address-container">
+				<text class="address-text">{{formattedSpot.address}}</text>
+				<text class="distance-text">距离{{formattedSpot.distance || '计算中...'}}</text>
 			</view>
 		</view>
 	</view>

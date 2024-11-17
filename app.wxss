@@ -1,1 +1,6 @@
 /**app.wxss**/
+page{
+    --td-button-primary-bg-color: #1CAFF5;
+    --td-button-primary-border-color: #1CAFF5;
+    --td-tag-primary-color:#1CAFF5;
+}

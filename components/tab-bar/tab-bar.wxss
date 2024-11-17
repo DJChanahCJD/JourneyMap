@@ -1,0 +1,49 @@
+  /* Navigation Bar Container */
+  .tab-bar {
+    position: fixed;
+    bottom: 5%; /* Adjusted to stick at the very bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.95); /* Slightly more opaque */
+    border-radius: 24px; /* Adjusted to match the rounder appearance */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer and larger shadow for floating effect */
+    padding: 4px;
+    z-index: 1000; /* Ensure it stays on top */
+  }
+
+  /* Each Navigation Item */
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* 设置固定高度 */
+    border-radius: 20px; /* 设置为高度的一半 */
+    margin: 0 2px; /* 减少水平边距 */
+    font-weight: bold;
+    box-sizing: border-box; /* 确保内边距不会增加元素的总尺寸 */
+  }
+
+  /* Active Item Style */
+  .tab-item.active {
+    background-color: #FFD700; /* Highlighted color to indicate active tab */
+  }
+
+  /* Icon Style for Navigation */
+  .tab-icon {
+    width: 48rpx; /* Icon size */
+    height: 48rpx;
+    margin-bottom: 2rpx;
+    margin-right: 2rpx;
+  }
+
+  .user-icon {
+    width: 50rpx;
+    height: 50rpx;
+  }

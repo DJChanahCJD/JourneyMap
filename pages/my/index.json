@@ -2,7 +2,7 @@
   "component": true,
   "usingComponents": {
     "top-bar": "/components/top-bar/top-bar",
-    "nav-bar": "/components/nav-bar/nav-bar",
+    "tab-bar": "/components/tab-bar/tab-bar",
     "spot-card": "/components/spot-card/spot-card",
     "t-popup": "tdesign-miniprogram/popup/popup",
     "t-input": "tdesign-miniprogram/input/input",
@@ -16,7 +16,8 @@
     "t-picker-item": "tdesign-miniprogram/picker-item/picker-item",
     "t-button": "tdesign-miniprogram/button/button",
     "t-icon": "tdesign-miniprogram/icon/icon",
-    "t-upload": "tdesign-miniprogram/upload/upload"
+    "t-upload": "tdesign-miniprogram/upload/upload",
+    "t-check-tag": "tdesign-miniprogram/check-tag/check-tag"
   },
   "navigationStyle": "custom"
 }

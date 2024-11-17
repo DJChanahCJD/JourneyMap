@@ -20,7 +20,8 @@ Page({
                 { value: 0, label: '全部类型' } // 初始化时包含 "全部类型" 选项
             ]
         },
-        spots: [], // 景点数据列表
+        originalSpots: [], // 新增：保存原始数据
+        spots: [], // 用于显示的筛选后数据
         favoriteSpotIds: [], // 用户收藏的景点ID列表
         isPickerDisabled: false, // 是否禁用下拉选择栏
     },
@@ -28,14 +29,16 @@ Page({
     async onLoad() {
         const favoriteSpotIds = app.globalData.favoriteSpotIds || [];
         const spots = await getSpots();
-        console.log("explore: ", app.globalData.favoriteSpotIds);
+        console.log("获取到的原始数据:", spots);
+
         this.setData({
             favoriteSpotIds: favoriteSpotIds,
-            spots: spots
-         });
-        // 生成初始的筛选项
+            originalSpots: spots, // 保存原始数据
+            spots: spots // 初始显示所有数据
+        });
+
         this.generateFilterOptions();
-        this.fetchSpotData(); // 初始加载景点数据
+        this.fetchSpotData();
     },
 
     onShow() {
@@ -50,28 +53,40 @@ Page({
         const provinces = new Set();
         const types = new Set();
 
-        // 遍历数据生成唯一的省份和类型
-        this.data.spots.forEach(spot => {
-            provinces.add(spot.province);
-            types.add(spot.type);
+        this.data.originalSpots.forEach(spot => {
+            if (spot.province) {
+                provinces.add(spot.province);
+            }
+            if (spot.category) {
+                types.add(spot.category);
+            }
         });
 
         // 将所有省份选项追加到 options 中
-        const provinceOptions = Array.from(provinces).map((province, index) => ({
-            value: index + 1, // 从 1 开始，因为 0 是 "全部省份"
-            label: province
-        }));
+        const provinceOptions = Array.from(provinces)
+            .filter(province => province) // 过滤掉空值
+            .map((province, index) => ({
+                value: index + 1, // 从 1 开始，因为 0 是 "全部省份"
+                label: province
+            }));
 
         // 将所有类型选项追加到 options 中
-        const typeOptions = Array.from(types).map((type, index) => ({
-            value: index + 1, // 从 1 开始，因为 0 是 "全部类型"
-            label: type
-        }));
+        const typeOptions = Array.from(types)
+            .filter(type => type) // 过滤掉空值
+            .map((type, index) => ({
+                value: index + 1, // 从 1 开始，因为 0 是 "全部类型"
+                label: type
+            }));
+
+        console.log("生成的筛选选项:", {
+            provinces: provinceOptions,
+            types: typeOptions
+        });
 
         // 设置初始数据，默认选中第一个
         this.setData({
-            'province.options': [...this.data.province.options, ...provinceOptions],
-            'type.options': [...this.data.type.options, ...typeOptions]
+            'province.options': [{ value: 0, label: '全部省份' }, ...provinceOptions],
+            'type.options': [{ value: 0, label: '全部类型' }, ...typeOptions]
         }, () => {
             // 生成初始的城市选项
             this.updateCityOptions();
@@ -114,20 +129,23 @@ Page({
         const selectedProvince = this.data.province.options[this.data.province.value].label;
         const cities = new Set();
 
-        // 根据所选省份生成城市选项
-        this.data.spots.forEach(spot => {
-            if (selectedProvince === '全部省份' || spot.province === selectedProvince) {
+        this.data.originalSpots.forEach(spot => {
+            if ((selectedProvince === '全部省份' || spot.province === selectedProvince) && spot.city) {
                 cities.add(spot.city);
             }
         });
 
         // 将所有城市选项追加到 options 中
-        const cityOptions = Array.from(cities).map((city, index) => ({
-            value: index + 1, // 从 1 开始，因为 0 是 "全部城市"
-            label: city
-        }));
+        const cityOptions = Array.from(cities)
+            .filter(city => city) // 过滤掉空值
+            .map((city, index) => ({
+                value: index + 1, // 从 1 开始，因为 0 是 "全部城市"
+                label: city
+            }));
 
-        // 更新城市选项，默认选中“全部城市”
+        console.log("生成的城市选项:", cityOptions);
+
+        // 更新城市选项，默认选中"全部城市"
         this.setData({
             'city.options': [{ value: 0, label: '全部城市' }, ...cityOptions],
             'city.value': 0
@@ -192,7 +210,8 @@ Page({
      * 获取景点数据，可以选择使用模拟数据或通过API获取
      */
     fetchSpotData() {
-        let filteredSpots = this.data.spots;
+        // 使用原始数据进行筛选
+        let filteredSpots = [...this.data.originalSpots];
 
         // 根据选择的省份进行筛选
         const selectedProvince = this.data.province.options[this.data.province.value].label;
@@ -209,18 +228,21 @@ Page({
         // 根据选择的类型进行筛选
         const selectedType = this.data.type.options[this.data.type.value].label;
         if (selectedType !== '全部类型') {
-            filteredSpots = filteredSpots.filter(spot => spot.type === selectedType);
+            filteredSpots = filteredSpots.filter(spot => spot.category === selectedType);
         }
 
-        const favoriteSpotIds = this.data.favoriteSpotIds;
-        filteredSpots.forEach(spot => {
-            spot.isCollected = favoriteSpotIds.includes(spot.id);
-        })
+        console.log("筛选条件:", {
+            province: selectedProvince,
+            city: selectedCity,
+            type: selectedType
+        });
 
+        console.log("筛选后的数据:", filteredSpots);
+
+        // 更新显示的数据，但不影响原始数据
         this.setData({
             spots: filteredSpots
         });
-        console.log("explore: ", this.data.spots);
     },
 
 

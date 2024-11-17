@@ -5,14 +5,11 @@
 	display: flex;
 	height: 240rpx;
 	border-radius: 12rpx;
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-	border: 1rpx solid #e0e0e0;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
 	background-color: #fff;
 	margin: 6rpx 12rpx;
-	z-index: 1001;
+	z-index: 999;
   }
-
-
 
   .card-info {
 	display: flex;
@@ -39,7 +36,7 @@
   }
 
   .card-title {
-	font-size: 28rpx;
+	font-size: 24rpx;
 	font-weight: bold;
 	margin-right: 12rpx;
   }
@@ -47,7 +44,6 @@
   .tag-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 12rpx;
 	align-items: center;
   }
 
@@ -55,8 +51,9 @@
 	background-color: #FFD700;
 	color: #000000;
 	padding: 2rpx 6rpx;
-	border-radius: 12rpx;
-	font-size: 18rpx;
+	border-radius: 4rpx;
+	margin-right: 12rpx;
+	font-size: 16rpx;
   }
 
   .collect-icon {
@@ -76,27 +73,39 @@
 	background-color: #f0f0f0;
 	color: #333;
 	padding: 2rpx 6rpx;
-	border-radius: 12rpx;
-	font-size: 18rpx;
+	border-radius: 4rpx;
+	font-size: 16rpx;
+	margin-bottom: 4rpx;
   }
 
-  .card-description {
-	font-size: 20rpx;
+  .card-recommendation {
+	font-size: 18rpx;
 	color: #3a3a3a;
   }
 
   .footer-container {
 	position: absolute;
 	display: flex;
+	flex-direction: column;
 	flex-wrap: wrap;
-	gap: 12rpx;
 	bottom: 0;
 	margin-bottom: 6rpx;
   }
 
-  .address-text {
-	font-size: 18rpx;
+  .address-container {
+	padding-bottom: 0rpx;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+  }
+
+  .address-text, .time-text, .distance-text {
+	font-size: 16rpx;
 	color: #999;
+  }
+
+  .distance-text {
+	flex-shrink: 0;
   }
 
 

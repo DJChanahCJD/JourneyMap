@@ -7,5 +7,32 @@
     "urlCheck": false,
     "lazyloadPlaceholderEnable": false
   },
-  "libVersion": "3.6.0"
+  "libVersion": "3.6.0",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/detail/index",
+          "pathName": "pages/detail/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my/index",
+          "pathName": "pages/my/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/profile/index",
+          "pathName": "pages/profile/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

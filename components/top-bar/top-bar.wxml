@@ -1,4 +1,4 @@
-<view class="top-bar">
+<view class="top-bar" style="margin-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
     <view class="logo-container">
       <image src="../../resources/map-marker-selected.png" class="logo"></image>
       <text class="app-name">JourneyMap</text>
